@@ -13,144 +13,148 @@ public class EcommerceDbContext : DbContext
 
     public DbSet<Sale> Sales { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=shiftsDb;Trusted_Connection=True;Initial Catalog=shiftsDb");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EcommerceDb;Trusted_Connection=True;Initial Catalog=EcommerceDb");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Shift>().HasOne(s => s.Worker).WithMany().HasForeignKey(s => s.WorkerId);
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.Category)
+            .WithMany(c => c.Products)
+            .IsRequired();
 
-        modelBuilder.Entity<Shift>()
-            .Property(s => s.StartTime)
-            .HasColumnType("TIME(0)");
+        modelBuilder.Entity<Product>()
+            .HasMany(p => p.Sales)
+            .WithMany(s => s.Products)
+            .UsingEntity(j => j.ToTable("ProductSales"));
 
-        modelBuilder.Entity<Shift>()
-            .Property(s => s.EndTime)
-            .HasColumnType("TIME(0)");
-
-        modelBuilder.Entity<Shift>()
-            .Property(s => s.Duration)
-            .HasComputedColumnSql(@"
-            CONVERT(TIME(0), 
-                CASE 
-                    WHEN EndTime < StartTime 
-                        THEN DATEADD(MINUTE, DATEDIFF(MINUTE, 
-                            CAST(StartTime AS DATETIME), 
-                            DATEADD(DAY, 1, CAST(EndTime AS DATETIME))
-                        ), '00:00')
-                    ELSE DATEADD(MINUTE, DATEDIFF(MINUTE, 
-                            CAST(StartTime AS DATETIME), 
-                            CAST(EndTime AS DATETIME)
-                        ), '00:00')
-                END)");
-
-        modelBuilder.Entity<Worker>()
-            .HasData(new List<Worker>
+        modelBuilder.Entity<Category>()
+            .HasData(new List<Category>
             {
-                new Worker
+                new Category
                 {
-                    WorkerId = 1,
-                    FirstName = "Tom",
-                    LastName = "Foolery",
-                    Title = "Laborer"
+                    Id = 1,
+                    Name = "Shoes",
                 },
-                new Worker
+                new Category
                 {
-                    WorkerId = 2,
-                    FirstName = "Sue",
-                    LastName = "Smith",
-                    Title = "Laborer"
+                    Id = 2,
+                    Name = "Socks",
                 },
-                new Worker
+                new Category
                 {
-                    WorkerId = 3,
-                    FirstName = "Doug",
-                    LastName = "Mitchell",
-                    Title = "Foreman"
+                    Id = 3,
+                    Name = "Pants",
                 },
-                new Worker
+                new Category
                 {
-                    WorkerId = 4,
-                    FirstName = "Mike",
-                    LastName = "Wilson",
-                    Title = "Apprentice"
+                    Id = 4,
+                    Name = "Shirts",
                 }
             });
 
-        modelBuilder.Entity<Shift>()
-           .HasData(new List<Shift>
+        modelBuilder.Entity<Product>()
+           .HasData(new List<Product>
            {
-                new Shift
+                new Product
                 {
-                    ShiftId = 1,
-                    WorkerId = 1,
-                    ShiftName = "1st",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 15)),
-                    StartTime = TimeOnly.Parse("08:00"),
-                    EndTime = TimeOnly.Parse("16:00")
+                    Id = 1,
+                    Name = "Hightop Sneakers",
+                    Price = 75.50m,
+                    CategoryId = 1,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 2,
-                    WorkerId = 1,
-                    ShiftName = "2nd",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 15)),
-                    StartTime = TimeOnly.Parse("16:00"),
-                    EndTime = TimeOnly.Parse("00:00")
+                    Id = 2,
+                    Name = "Boat Loafers",
+                    Price = 53.75m,
+                    CategoryId = 1,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 3,
-                    WorkerId = 2,
-                    ShiftName = "2nd",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 14)),
-                    StartTime = TimeOnly.Parse("16:00"),
-                    EndTime = TimeOnly.Parse("00:00")
+                    Id = 3,
+                    Name = "Dress Socks",
+                    Price = 15.25m,
+                    CategoryId = 2,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 4,
-                    WorkerId = 2,
-                    ShiftName = "3rd",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 14)),
-                    StartTime = TimeOnly.Parse("00:00"),
-                    EndTime = TimeOnly.Parse("08:00")
+                    Id = 4,
+                    Name = "Ankle Socks",
+                    Price = 10.15m,
+                    CategoryId = 2,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 5,
-                    WorkerId = 3,
-                    ShiftName = "3rd",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 13)),
-                    StartTime = TimeOnly.Parse("16:00"),
-                    EndTime = TimeOnly.Parse("00:00")
+                    Id = 5,
+                    Name = "Dress Slacks",
+                    Price = 35.99m,
+                    CategoryId = 3,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 6,
-                    WorkerId = 3,
-                    ShiftName = "2nd",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 13)),
-                    StartTime = TimeOnly.Parse("16:00"),
-                    EndTime = TimeOnly.Parse("00:00")
+                    Id = 6,
+                    Name = "Stonewash Jeans",
+                    Price = 45.95m,
+                    CategoryId = 3,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 7,
-                    WorkerId = 4,
-                    ShiftName = "1st",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 14)),
-                    StartTime = TimeOnly.Parse("08:00"),
-                    EndTime = TimeOnly.Parse("16:00")
+                    Id = 7,
+                    Name = "Flannel Shirt",
+                    Price = 34.75m,
+                    CategoryId = 4,
                 },
-                new Shift
+                new Product
                 {
-                    ShiftId = 8,
-                    WorkerId = 4,
-                    ShiftName = "1st",
-                    Date = DateOnly.FromDateTime(new DateTime(2025, 06, 13)),
-                    StartTime = TimeOnly.Parse("08:00"),
-                    EndTime = TimeOnly.Parse("16:00")
+                    Id = 8,
+                    Name = "Shortsleeve Polo",
+                    Price = 22.99m,
+                    CategoryId = 4,
                 }
            });
+
+        modelBuilder.Entity<Sale>()
+            .HasData(new List<Sale>
+            {
+                new Sale
+                {
+                    Id = 1,
+                    TimeStamp = DateTime.Now,
+                    Total = 22.99m
+                },
+                new Sale
+                {
+                    Id = 2,
+                    TimeStamp = DateTime.Now,
+                    Total = 61.20m
+                },
+                new Sale
+                {
+                    Id = 3,
+                    TimeStamp = DateTime.Now,
+                    Total = 156.20m
+                },
+                new Sale
+                {
+                    Id = 4,
+                    TimeStamp = DateTime.Now,
+                    Total = 20.30m
+                },
+                new Sale
+                {
+                    Id = 5,
+                    TimeStamp = DateTime.Now,
+                    Total = 53.75m
+                }
+            });
+
+        modelBuilder.Entity("ProductSales").HasData(
+            new { ProductsId = 8, SalesId = 1 },
+            new { ProductsId = 6, SalesId = 2 },
+            new { ProductsId = 3, SalesId = 2 },
+            new { ProductsId = 7, SalesId = 3 },
+            new { ProductsId = 6, SalesId = 3 },
+            new { ProductsId = 1, SalesId = 3 }
+            );
     }
 }
