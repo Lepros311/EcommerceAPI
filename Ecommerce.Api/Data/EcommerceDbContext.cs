@@ -47,7 +47,7 @@ public class EcommerceDbContext : DbContext
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<Sale>()
-            .Property(s => s.Total)
+            .Property(s => s.TotalPrice)
             .HasColumnType("decimal(18,2)");
 
 
@@ -56,23 +56,23 @@ public class EcommerceDbContext : DbContext
             {
                 new Category
                 {
-                    Id = 1,
-                    Name = "Shoes",
+                    CategoryId = 1,
+                    CategoryName = "Shoes",
                 },
                 new Category
                 {
-                    Id = 2,
-                    Name = "Socks",
+                    CategoryId = 2,
+                    CategoryName = "Socks",
                 },
                 new Category
                 {
-                    Id = 3,
-                    Name = "Pants",
+                    CategoryId = 3,
+                    CategoryName = "Pants",
                 },
                 new Category
                 {
-                    Id = 4,
-                    Name = "Shirts",
+                    CategoryId = 4,
+                    CategoryName = "Shirts",
                 }
             });
 
@@ -81,57 +81,57 @@ public class EcommerceDbContext : DbContext
            {
                 new Product
                 {
-                    Id = 1,
-                    Name = "Hightop Sneakers",
+                    ProductId = 1,
+                    ProductName = "Hightop Sneakers",
                     Price = 75.50m,
                     CategoryId = 1,
                 },
                 new Product
                 {
-                    Id = 2,
-                    Name = "Boat Loafers",
+                    ProductId = 2,
+                    ProductName = "Boat Loafers",
                     Price = 53.75m,
                     CategoryId = 1,
                 },
                 new Product
                 {
-                    Id = 3,
-                    Name = "Dress Socks",
+                    ProductId = 3,
+                    ProductName = "Dress Socks",
                     Price = 15.25m,
                     CategoryId = 2,
                 },
                 new Product
                 {
-                    Id = 4,
-                    Name = "Ankle Socks",
+                    ProductId = 4,
+                    ProductName = "Ankle Socks",
                     Price = 10.15m,
                     CategoryId = 2,
                 },
                 new Product
                 {
-                    Id = 5,
-                    Name = "Dress Slacks",
+                    ProductId = 5,
+                    ProductName = "Dress Slacks",
                     Price = 35.99m,
                     CategoryId = 3,
                 },
                 new Product
                 {
-                    Id = 6,
-                    Name = "Stonewash Jeans",
+                    ProductId = 6,
+                    ProductName = "Stonewash Jeans",
                     Price = 45.95m,
                     CategoryId = 3,
                 },
                 new Product
                 {
-                    Id = 7,
-                    Name = "Flannel Shirt",
+                    ProductId = 7,
+                    ProductName = "Flannel Shirt",
                     Price = 34.75m,
                     CategoryId = 4,
                 },
                 new Product
                 {
-                    Id = 8,
-                    Name = "Shortsleeve Polo",
+                    ProductId = 8,
+                    ProductName = "Shortsleeve Polo",
                     Price = 22.99m,
                     CategoryId = 4,
                 }
@@ -142,46 +142,46 @@ public class EcommerceDbContext : DbContext
             {
                 new Sale
                 {
-                    Id = 1,
-                    TimeStamp = new DateTime(2025, 08, 01, 12, 37, 22),
-                    Total = 22.99m
+                    SaleId = 1,
+                    DateAndTimeOfSale = new DateTime(2025, 08, 01, 12, 37, 22),
+                    TotalPrice = 22.99m
                 },
                 new Sale
                 {
-                    Id = 2,
-                    TimeStamp = new DateTime(2025, 08, 03, 14, 30, 48),
-                    Total = 61.20m
+                    SaleId = 2,
+                    DateAndTimeOfSale = new DateTime(2025, 08, 03, 14, 30, 48),
+                    TotalPrice = 61.20m
                 },
                 new Sale
                 {
-                    Id = 3,
-                    TimeStamp = new DateTime(2025, 08, 07, 11, 39, 10),
-                    Total = 156.20m
+                    SaleId = 3,
+                    DateAndTimeOfSale = new DateTime(2025, 08, 07, 11, 39, 10),
+                    TotalPrice = 156.20m
                 },
                 new Sale
                 {
-                    Id = 4,
-                    TimeStamp = new DateTime(2025, 08, 07, 19, 13, 55),
-                    Total = 107.50m
+                    SaleId = 4,
+                    DateAndTimeOfSale = new DateTime(2025, 08, 07, 19, 13, 55),
+                    TotalPrice = 107.50m
                 },
                 new Sale
                 {
-                    Id = 5,
-                    TimeStamp = new DateTime(2025, 08, 08, 9, 04, 17),
-                    Total = 95.80m
+                    SaleId = 5,
+                    DateAndTimeOfSale = new DateTime(2025, 08, 08, 9, 04, 17),
+                    TotalPrice = 95.80m
                 }
             });
 
         modelBuilder.Entity<LineItem>().HasData(
-            new LineItem { Id = 1, SaleId = 1, ProductId = 8, Quantity = 1, UnitPrice = 22.99m },
-            new LineItem { Id = 2, SaleId = 2, ProductId = 6, Quantity = 1, UnitPrice = 45.95m },
-            new LineItem { Id = 3, SaleId = 2, ProductId = 3, Quantity = 1, UnitPrice = 15.25m },
-            new LineItem { Id = 4, SaleId = 3, ProductId = 7, Quantity = 1, UnitPrice = 34.75m },
-            new LineItem { Id = 5, SaleId = 3, ProductId = 6, Quantity = 1, UnitPrice = 45.95m },
-            new LineItem { Id = 6, SaleId = 3, ProductId = 1, Quantity = 1, UnitPrice = 75.50m },
-            new LineItem { Id = 7, SaleId = 4, ProductId = 2, Quantity = 2, UnitPrice = 53.75m },
-            new LineItem { Id = 8, SaleId = 5, ProductId = 4, Quantity = 2, UnitPrice = 10.15m },
-            new LineItem { Id = 9, SaleId = 5, ProductId = 1, Quantity = 1, UnitPrice = 75.50m }
+            new LineItem { LineItemId = 1, SaleId = 1, ProductId = 8, Quantity = 1, UnitPrice = 22.99m },
+            new LineItem { LineItemId = 2, SaleId = 2, ProductId = 6, Quantity = 1, UnitPrice = 45.95m },
+            new LineItem { LineItemId = 3, SaleId = 2, ProductId = 3, Quantity = 1, UnitPrice = 15.25m },
+            new LineItem { LineItemId = 4, SaleId = 3, ProductId = 7, Quantity = 1, UnitPrice = 34.75m },
+            new LineItem { LineItemId = 5, SaleId = 3, ProductId = 6, Quantity = 1, UnitPrice = 45.95m },
+            new LineItem { LineItemId = 6, SaleId = 3, ProductId = 1, Quantity = 1, UnitPrice = 75.50m },
+            new LineItem { LineItemId = 7, SaleId = 4, ProductId = 2, Quantity = 2, UnitPrice = 53.75m },
+            new LineItem { LineItemId = 8, SaleId = 5, ProductId = 4, Quantity = 2, UnitPrice = 10.15m },
+            new LineItem { LineItemId = 9, SaleId = 5, ProductId = 1, Quantity = 1, UnitPrice = 75.50m }
         );
 
     }

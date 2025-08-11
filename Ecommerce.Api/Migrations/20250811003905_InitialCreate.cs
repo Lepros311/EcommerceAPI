@@ -17,47 +17,47 @@ namespace Ecommerce.Api.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Sales",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    SaleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    DateAndTimeOfSale = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sales", x => x.Id);
+                    table.PrimaryKey("PK_Sales", x => x.SaleId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
+                        principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -65,7 +65,7 @@ namespace Ecommerce.Api.Migrations
                 name: "LineItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    LineItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SaleId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
@@ -74,24 +74,24 @@ namespace Ecommerce.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LineItems", x => x.Id);
+                    table.PrimaryKey("PK_LineItems", x => x.LineItemId);
                     table.ForeignKey(
                         name: "FK_LineItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
+                        principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LineItems_Sales_SaleId",
                         column: x => x.SaleId,
                         principalTable: "Sales",
-                        principalColumn: "Id",
+                        principalColumn: "SaleId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "CategoryId", "CategoryName" },
                 values: new object[,]
                 {
                     { 1, "Shoes" },
@@ -102,7 +102,7 @@ namespace Ecommerce.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Sales",
-                columns: new[] { "Id", "TimeStamp", "Total" },
+                columns: new[] { "SaleId", "DateAndTimeOfSale", "TotalPrice" },
                 values: new object[,]
                 {
                     { 1, new DateTime(2025, 8, 1, 12, 37, 22, 0, DateTimeKind.Unspecified), 22.99m },
@@ -114,22 +114,22 @@ namespace Ecommerce.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "CategoryId", "Name", "Price" },
+                columns: new[] { "ProductId", "CategoryId", "Price", "ProductName" },
                 values: new object[,]
                 {
-                    { 1, 1, "Hightop Sneakers", 75.50m },
-                    { 2, 1, "Boat Loafers", 53.75m },
-                    { 3, 2, "Dress Socks", 15.25m },
-                    { 4, 2, "Ankle Socks", 10.15m },
-                    { 5, 3, "Dress Slacks", 35.99m },
-                    { 6, 3, "Stonewash Jeans", 45.95m },
-                    { 7, 4, "Flannel Shirt", 34.75m },
-                    { 8, 4, "Shortsleeve Polo", 22.99m }
+                    { 1, 1, 75.50m, "Hightop Sneakers" },
+                    { 2, 1, 53.75m, "Boat Loafers" },
+                    { 3, 2, 15.25m, "Dress Socks" },
+                    { 4, 2, 10.15m, "Ankle Socks" },
+                    { 5, 3, 35.99m, "Dress Slacks" },
+                    { 6, 3, 45.95m, "Stonewash Jeans" },
+                    { 7, 4, 34.75m, "Flannel Shirt" },
+                    { 8, 4, 22.99m, "Shortsleeve Polo" }
                 });
 
             migrationBuilder.InsertData(
                 table: "LineItems",
-                columns: new[] { "Id", "ProductId", "Quantity", "SaleId", "UnitPrice" },
+                columns: new[] { "LineItemId", "ProductId", "Quantity", "SaleId", "UnitPrice" },
                 values: new object[,]
                 {
                     { 1, 8, 1, 1, 22.99m },

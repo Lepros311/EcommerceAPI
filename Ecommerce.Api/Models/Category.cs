@@ -4,10 +4,10 @@ namespace Ecommerce.Api.Models;
 
 public class Category
 {
-    public int Id { get; set; }
+    public int CategoryId { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string CategoryName { get; set; }
 
     public List<Product> Products { get; } = [];
 }

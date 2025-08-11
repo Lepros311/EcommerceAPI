@@ -24,50 +24,50 @@ namespace Ecommerce.Api.Migrations
 
             modelBuilder.Entity("Ecommerce.Api.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("CategoryId");
 
                     b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            Name = "Shoes"
+                            CategoryId = 1,
+                            CategoryName = "Shoes"
                         },
                         new
                         {
-                            Id = 2,
-                            Name = "Socks"
+                            CategoryId = 2,
+                            CategoryName = "Socks"
                         },
                         new
                         {
-                            Id = 3,
-                            Name = "Pants"
+                            CategoryId = 3,
+                            CategoryName = "Pants"
                         },
                         new
                         {
-                            Id = 4,
-                            Name = "Shirts"
+                            CategoryId = 4,
+                            CategoryName = "Shirts"
                         });
                 });
 
             modelBuilder.Entity("Ecommerce.Api.Models.LineItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("LineItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LineItemId"));
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -81,7 +81,7 @@ namespace Ecommerce.Api.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("LineItemId");
 
                     b.HasIndex("ProductId");
 
@@ -92,7 +92,7 @@ namespace Ecommerce.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            LineItemId = 1,
                             ProductId = 8,
                             Quantity = 1,
                             SaleId = 1,
@@ -100,7 +100,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            LineItemId = 2,
                             ProductId = 6,
                             Quantity = 1,
                             SaleId = 2,
@@ -108,7 +108,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            LineItemId = 3,
                             ProductId = 3,
                             Quantity = 1,
                             SaleId = 2,
@@ -116,7 +116,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            LineItemId = 4,
                             ProductId = 7,
                             Quantity = 1,
                             SaleId = 3,
@@ -124,7 +124,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 5,
+                            LineItemId = 5,
                             ProductId = 6,
                             Quantity = 1,
                             SaleId = 3,
@@ -132,7 +132,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 6,
+                            LineItemId = 6,
                             ProductId = 1,
                             Quantity = 1,
                             SaleId = 3,
@@ -140,7 +140,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 7,
+                            LineItemId = 7,
                             ProductId = 2,
                             Quantity = 2,
                             SaleId = 4,
@@ -148,7 +148,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 8,
+                            LineItemId = 8,
                             ProductId = 4,
                             Quantity = 2,
                             SaleId = 5,
@@ -156,7 +156,7 @@ namespace Ecommerce.Api.Migrations
                         },
                         new
                         {
-                            Id = 9,
+                            LineItemId = 9,
                             ProductId = 1,
                             Quantity = 1,
                             SaleId = 5,
@@ -166,23 +166,23 @@ namespace Ecommerce.Api.Migrations
 
             modelBuilder.Entity("Ecommerce.Api.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProductId");
 
                     b.HasIndex("CategoryId");
 
@@ -191,110 +191,110 @@ namespace Ecommerce.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            ProductId = 1,
                             CategoryId = 1,
-                            Name = "Hightop Sneakers",
-                            Price = 75.50m
+                            Price = 75.50m,
+                            ProductName = "Hightop Sneakers"
                         },
                         new
                         {
-                            Id = 2,
+                            ProductId = 2,
                             CategoryId = 1,
-                            Name = "Boat Loafers",
-                            Price = 53.75m
+                            Price = 53.75m,
+                            ProductName = "Boat Loafers"
                         },
                         new
                         {
-                            Id = 3,
+                            ProductId = 3,
                             CategoryId = 2,
-                            Name = "Dress Socks",
-                            Price = 15.25m
+                            Price = 15.25m,
+                            ProductName = "Dress Socks"
                         },
                         new
                         {
-                            Id = 4,
+                            ProductId = 4,
                             CategoryId = 2,
-                            Name = "Ankle Socks",
-                            Price = 10.15m
+                            Price = 10.15m,
+                            ProductName = "Ankle Socks"
                         },
                         new
                         {
-                            Id = 5,
+                            ProductId = 5,
                             CategoryId = 3,
-                            Name = "Dress Slacks",
-                            Price = 35.99m
+                            Price = 35.99m,
+                            ProductName = "Dress Slacks"
                         },
                         new
                         {
-                            Id = 6,
+                            ProductId = 6,
                             CategoryId = 3,
-                            Name = "Stonewash Jeans",
-                            Price = 45.95m
+                            Price = 45.95m,
+                            ProductName = "Stonewash Jeans"
                         },
                         new
                         {
-                            Id = 7,
+                            ProductId = 7,
                             CategoryId = 4,
-                            Name = "Flannel Shirt",
-                            Price = 34.75m
+                            Price = 34.75m,
+                            ProductName = "Flannel Shirt"
                         },
                         new
                         {
-                            Id = 8,
+                            ProductId = 8,
                             CategoryId = 4,
-                            Name = "Shortsleeve Polo",
-                            Price = 22.99m
+                            Price = 22.99m,
+                            ProductName = "Shortsleeve Polo"
                         });
                 });
 
             modelBuilder.Entity("Ecommerce.Api.Models.Sale", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SaleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleId"));
 
-                    b.Property<DateTime>("TimeStamp")
+                    b.Property<DateTime>("DateAndTimeOfSale")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Total")
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("SaleId");
 
                     b.ToTable("Sales", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            TimeStamp = new DateTime(2025, 8, 1, 12, 37, 22, 0, DateTimeKind.Unspecified),
-                            Total = 22.99m
+                            SaleId = 1,
+                            DateAndTimeOfSale = new DateTime(2025, 8, 1, 12, 37, 22, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 22.99m
                         },
                         new
                         {
-                            Id = 2,
-                            TimeStamp = new DateTime(2025, 8, 3, 14, 30, 48, 0, DateTimeKind.Unspecified),
-                            Total = 61.20m
+                            SaleId = 2,
+                            DateAndTimeOfSale = new DateTime(2025, 8, 3, 14, 30, 48, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 61.20m
                         },
                         new
                         {
-                            Id = 3,
-                            TimeStamp = new DateTime(2025, 8, 7, 11, 39, 10, 0, DateTimeKind.Unspecified),
-                            Total = 156.20m
+                            SaleId = 3,
+                            DateAndTimeOfSale = new DateTime(2025, 8, 7, 11, 39, 10, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 156.20m
                         },
                         new
                         {
-                            Id = 4,
-                            TimeStamp = new DateTime(2025, 8, 7, 19, 13, 55, 0, DateTimeKind.Unspecified),
-                            Total = 107.50m
+                            SaleId = 4,
+                            DateAndTimeOfSale = new DateTime(2025, 8, 7, 19, 13, 55, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 107.50m
                         },
                         new
                         {
-                            Id = 5,
-                            TimeStamp = new DateTime(2025, 8, 8, 9, 4, 17, 0, DateTimeKind.Unspecified),
-                            Total = 95.80m
+                            SaleId = 5,
+                            DateAndTimeOfSale = new DateTime(2025, 8, 8, 9, 4, 17, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 95.80m
                         });
                 });
 

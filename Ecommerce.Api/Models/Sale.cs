@@ -5,13 +5,13 @@ namespace Ecommerce.Api.Models;
 
 public class Sale
 {
-    public int Id { get; set; }
+    public int SaleId { get; set; }
 
     [Required]
-    public DateTime TimeStamp { get; set; }
+    public DateTime DateAndTimeOfSale { get; set; }
 
     [Required]
-    public decimal Total { get; set; }
+    public decimal TotalPrice { get; set; }
 
     [NotMapped]
     public decimal CalculatedTotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);

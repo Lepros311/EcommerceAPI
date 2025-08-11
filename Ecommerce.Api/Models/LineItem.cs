@@ -4,7 +4,7 @@ namespace Ecommerce.Api.Models;
 
 public class LineItem
 {
-    public int Id { get; set; }
+    public int LineItemId { get; set; }
 
     [Required]
     public int SaleId { get; set; }
