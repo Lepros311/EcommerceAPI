@@ -18,5 +18,5 @@ public class Product
     [Required]
     public Category Category { get; set; }
 
-    public List<Sale> Sales { get; } = [];
+    public List<LineItem> LineItems { get; } = [];
 }

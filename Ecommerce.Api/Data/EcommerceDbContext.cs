@@ -17,15 +17,39 @@ public class EcommerceDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>().ToTable("Categories");
+        modelBuilder.Entity<Product>().ToTable("Products");
+        modelBuilder.Entity<Sale>().ToTable("Sales");
+
         modelBuilder.Entity<Product>()
             .HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .IsRequired();
 
+        modelBuilder.Entity<LineItem>().ToTable("LineItems");
+
+        modelBuilder.Entity<LineItem>()
+            .HasOne(li => li.Sale)
+            .WithMany(s => s.LineItems)
+            .HasForeignKey(li => li.SaleId);
+
+        modelBuilder.Entity<LineItem>()
+            .HasOne(li => li.Product)
+            .WithMany(p => p.LineItems)
+            .HasForeignKey(li => li.ProductId);
+
+        modelBuilder.Entity<LineItem>()
+            .Property(li => li.UnitPrice)
+            .HasColumnType("decimal(18,2)");
+
         modelBuilder.Entity<Product>()
-            .HasMany(p => p.Sales)
-            .WithMany(s => s.Products)
-            .UsingEntity(j => j.ToTable("ProductSales"));
+            .Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Sale>()
+            .Property(s => s.Total)
+            .HasColumnType("decimal(18,2)");
+
 
         modelBuilder.Entity<Category>()
             .HasData(new List<Category>
@@ -119,42 +143,46 @@ public class EcommerceDbContext : DbContext
                 new Sale
                 {
                     Id = 1,
-                    TimeStamp = DateTime.Now,
+                    TimeStamp = new DateTime(2025, 08, 01, 12, 37, 22),
                     Total = 22.99m
                 },
                 new Sale
                 {
                     Id = 2,
-                    TimeStamp = DateTime.Now,
+                    TimeStamp = new DateTime(2025, 08, 03, 14, 30, 48),
                     Total = 61.20m
                 },
                 new Sale
                 {
                     Id = 3,
-                    TimeStamp = DateTime.Now,
+                    TimeStamp = new DateTime(2025, 08, 07, 11, 39, 10),
                     Total = 156.20m
                 },
                 new Sale
                 {
                     Id = 4,
-                    TimeStamp = DateTime.Now,
-                    Total = 20.30m
+                    TimeStamp = new DateTime(2025, 08, 07, 19, 13, 55),
+                    Total = 107.50m
                 },
                 new Sale
                 {
                     Id = 5,
-                    TimeStamp = DateTime.Now,
-                    Total = 53.75m
+                    TimeStamp = new DateTime(2025, 08, 08, 9, 04, 17),
+                    Total = 95.80m
                 }
             });
 
-        modelBuilder.Entity("ProductSales").HasData(
-            new { ProductsId = 8, SalesId = 1 },
-            new { ProductsId = 6, SalesId = 2 },
-            new { ProductsId = 3, SalesId = 2 },
-            new { ProductsId = 7, SalesId = 3 },
-            new { ProductsId = 6, SalesId = 3 },
-            new { ProductsId = 1, SalesId = 3 }
-            );
+        modelBuilder.Entity<LineItem>().HasData(
+            new LineItem { Id = 1, SaleId = 1, ProductId = 8, Quantity = 1, UnitPrice = 22.99m },
+            new LineItem { Id = 2, SaleId = 2, ProductId = 6, Quantity = 1, UnitPrice = 45.95m },
+            new LineItem { Id = 3, SaleId = 2, ProductId = 3, Quantity = 1, UnitPrice = 15.25m },
+            new LineItem { Id = 4, SaleId = 3, ProductId = 7, Quantity = 1, UnitPrice = 34.75m },
+            new LineItem { Id = 5, SaleId = 3, ProductId = 6, Quantity = 1, UnitPrice = 45.95m },
+            new LineItem { Id = 6, SaleId = 3, ProductId = 1, Quantity = 1, UnitPrice = 75.50m },
+            new LineItem { Id = 7, SaleId = 4, ProductId = 2, Quantity = 2, UnitPrice = 53.75m },
+            new LineItem { Id = 8, SaleId = 5, ProductId = 4, Quantity = 2, UnitPrice = 10.15m },
+            new LineItem { Id = 9, SaleId = 5, ProductId = 1, Quantity = 1, UnitPrice = 75.50m }
+        );
+
     }
 }

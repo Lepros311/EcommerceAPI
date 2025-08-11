@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ecommerce.Api.Models;
 
@@ -12,6 +13,8 @@ public class Sale
     [Required]
     public decimal Total { get; set; }
 
-    [Required]
-    public List<Product> Products { get; } = [];
+    [NotMapped]
+    public decimal CalculatedTotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);
+
+    public List<LineItem> LineItems { get; } = [];
 }
