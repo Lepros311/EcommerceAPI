@@ -4,20 +4,22 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
+      "launchBrowser": true,
       "applicationUrl": "http://localhost:5101",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "https://localhost:7150;http://localhost:5101",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "commandName": "Project",
+        "workingDirectory": "C:\\Users\\Andrew\\Documents\\coding stuff\\C#\\The C# Academy\\Ecommerce.Api\\",
+        "launchBrowser": true,
+        "launchUrl": "swagger",
+        "dotnetRunMessages": true,
+        "applicationUrl": "https://localhost:7150;http://localhost:5101",
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+        }
     }
   }
 }

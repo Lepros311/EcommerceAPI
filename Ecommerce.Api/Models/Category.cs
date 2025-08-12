@@ -10,4 +10,6 @@ public class Category
     public string CategoryName { get; set; }
 
     public List<Product> Products { get; } = [];
+
+    public override string ToString() => $"{CategoryName}";
 }

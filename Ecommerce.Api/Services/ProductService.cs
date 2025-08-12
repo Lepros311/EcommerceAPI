@@ -1,9 +1,17 @@
 ﻿using Ecommerce.Api.Models;
+using Ecommerce.Api.Data;
 
 namespace Ecommerce.Api.Services;
 
 public class ProductService : IProductService
 {
+    private readonly EcommerceDbContext _dbContext;
+
+    public ProductService(EcommerceDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
     public Product CreateProduct(Product product)
     {
         throw new NotImplementedException();
@@ -21,7 +29,7 @@ public class ProductService : IProductService
 
     public List<Product> GetProducts()
     {
-        throw new NotImplementedException();
+        return _dbContext.Products.ToList();
     }
 
     public Product UpdateProduct(Product updatedProduct)

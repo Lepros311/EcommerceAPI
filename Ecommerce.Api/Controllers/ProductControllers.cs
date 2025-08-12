@@ -5,8 +5,8 @@ using Ecommerce.Api.Models;
 
 namespace Ecommerce.Api.Controllers
 {
+    [Route("api/products")]
     [ApiController]
-    [Route("api/[controller]")]
     public class ProductControllers : ControllerBase
     {
         private readonly EcommerceDbContext _dbContext;
@@ -28,7 +28,7 @@ namespace Ecommerce.Api.Controllers
                         ProductId = p.ProductId,
                         ProductName = p.ProductName,
                         Price = p.Price,
-                        Category = p.Category
+                        Category = p.Category.CategoryName
                     })
                     .ToListAsync();
 
