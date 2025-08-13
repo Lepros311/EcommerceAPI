@@ -1,7 +1,7 @@
 using Ecommerce.Api.Models;
-using Ecommerce.Api.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Ecommerce.Api.Services;
+using Microsoft.AspNetCore.Mvc;
+using Ecommerce.Api.Responses;
 
 namespace Ecommerce.Api.Controllers
 {
@@ -79,7 +79,14 @@ namespace Ecommerce.Api.Controllers
                     CategoryId = dto.CategoryId
                 };
 
-                var createdProduct = await _productService.CreateProduct(product);
+                var response = await _productService.CreateProduct(product);
+
+                if (response.Status == ResponseStatus.Fail)
+                {
+                    return BadRequest(response.Message);
+                }
+
+                var createdProduct = response.Data;
 
                 var productDto = new ProductDto
                 {

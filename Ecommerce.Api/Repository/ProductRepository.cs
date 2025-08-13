@@ -29,17 +29,17 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product> CreateProduct(Product product)
     {
-        var category = await _dbContext.Categories.FindAsync(product.CategoryId);
-
-        if (category == null)
-        {
-            throw new ArgumentException("Invalid CategoryId");
-        }
-
-        product.Category = category;
         _dbContext.Products.Add(product);
 
-        await _dbContext.SaveChangesAsync();
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Save failed: {ex.Message}");
+            throw;
+        }
 
         return product;
     }

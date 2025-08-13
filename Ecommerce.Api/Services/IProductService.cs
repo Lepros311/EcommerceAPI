@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Api.Models;
+using Ecommerce.Api.Responses;
 
 namespace Ecommerce.Api.Services;
 
@@ -8,7 +9,7 @@ public interface IProductService
 
     Task<Product> GetProductById(int id);
 
-    Task<Product> CreateProduct(Product product);
+    Task<BaseResponse<Product>> CreateProduct(Product product);
 
     void UpdateProduct(Product product);
 

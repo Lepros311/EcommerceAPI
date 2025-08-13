@@ -13,6 +13,7 @@ builder.Services.AddDbContext<EcommerceDbContext>(opt => opt.UseSqlServer(builde
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddOpenApi();
 
