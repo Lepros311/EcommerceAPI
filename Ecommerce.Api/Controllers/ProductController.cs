@@ -38,5 +38,33 @@ namespace Ecommerce.Api.Controllers
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductDto>> GetProductById(int id)
+        {
+            try
+            {
+                var product = await _productService.GetProductById(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                var productDto = new ProductDto
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.ProductName,
+                    Price = product.Price,
+                    Category = product.Category.CategoryName
+                };
+
+                return Ok(productDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
     }
 }

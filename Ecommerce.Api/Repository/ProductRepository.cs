@@ -20,9 +20,11 @@ public class ProductRepository : IProductRepository
         return products;
     }
 
-    public Task<Product> GetProductById(int id)
+    public async Task<Product> GetProductById(int id)
     {
-        throw new NotImplementedException();
+        var product = await _dbContext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == id);
+
+        return product;
     }
 
     public Task<Product> CreateProduct(Product product)

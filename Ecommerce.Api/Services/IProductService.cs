@@ -6,7 +6,7 @@ public interface IProductService
 {
     Task<List<Product>> GetAllProducts();
 
-    Product GetProductById(int id);
+    Task<Product> GetProductById(int id);
 
     void CreateProduct(Product product);
 
