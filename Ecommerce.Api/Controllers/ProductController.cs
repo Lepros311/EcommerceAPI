@@ -70,6 +70,8 @@ namespace Ecommerce.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] CreateProductDto dto)
         {
+            BaseResponse<Product>? response = null;
+
             try
             {
                 var product = new Product
@@ -79,7 +81,7 @@ namespace Ecommerce.Api.Controllers
                     CategoryId = dto.CategoryId
                 };
 
-                var response = await _productService.CreateProduct(product);
+                response = await _productService.CreateProduct(product);
 
                 if (response.Status == ResponseStatus.Fail)
                 {
@@ -104,7 +106,8 @@ namespace Ecommerce.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+                var message = response?.Message ?? $"Internal Server Error: {ex.Message}";
+                return StatusCode(500, message);
             }
         }
     }
