@@ -8,7 +8,7 @@ public interface IProductService
 
     Task<Product> GetProductById(int id);
 
-    void CreateProduct(Product product);
+    Task<Product> CreateProduct(Product product);
 
     void UpdateProduct(Product product);
 

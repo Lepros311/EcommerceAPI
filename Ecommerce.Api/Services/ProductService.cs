@@ -1,6 +1,5 @@
 ﻿using Ecommerce.Api.Models;
 using Ecommerce.Api.Repository;
-using System.Threading.Tasks;
 
 namespace Ecommerce.Api.Services;
 
@@ -23,9 +22,9 @@ public class ProductService : IProductService
         return await _productRepository.GetProductById(id);
     }
 
-    public void CreateProduct(Product product)
+    public async Task<Product> CreateProduct(Product product)
     {
-        throw new NotImplementedException();
+        return await _productRepository.CreateProduct(product);
     }
 
     public void UpdateProduct(Product product)

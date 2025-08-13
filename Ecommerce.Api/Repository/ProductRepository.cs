@@ -27,9 +27,21 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public Task<Product> CreateProduct(Product product)
+    public async Task<Product> CreateProduct(Product product)
     {
-        throw new NotImplementedException();
+        var category = await _dbContext.Categories.FindAsync(product.CategoryId);
+
+        if (category == null)
+        {
+            throw new ArgumentException("Invalid CategoryId");
+        }
+
+        product.Category = category;
+        _dbContext.Products.Add(product);
+
+        await _dbContext.SaveChangesAsync();
+
+        return product;
     }
 
     public Task<Product> UpdateProduct(int id, Product updatedProduct)
