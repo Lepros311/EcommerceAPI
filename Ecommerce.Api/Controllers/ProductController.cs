@@ -1,6 +1,7 @@
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Ecommerce.Api.Services;
 
 namespace Ecommerce.Api.Controllers
 {
@@ -8,11 +9,11 @@ namespace Ecommerce.Api.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productService;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductService productService)
         {
-            _productRepository = productRepository;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -20,7 +21,7 @@ namespace Ecommerce.Api.Controllers
         {
             try
             {
-                var products = await _productRepository.GetAllProducts();
+                var products = await _productService.GetAllProducts();
 
                 var productDtos = products.Select(p => new ProductDto
                 {
