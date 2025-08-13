@@ -5,9 +5,9 @@ namespace Ecommerce.Api.Services;
 
 public interface IProductService
 {
-    Task<List<Product>> GetAllProducts();
+    Task<BaseResponse<List<Product>>> GetAllProducts();
 
-    Task<Product> GetProductById(int id);
+    Task<BaseResponse<Product>> GetProductById(int id);
 
     Task<BaseResponse<Product>> CreateProduct(Product product);
 

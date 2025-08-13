@@ -16,14 +16,42 @@ public class ProductService : IProductService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<List<Product>> GetAllProducts()
+    public async Task<BaseResponse<List<Product>>> GetAllProducts()
     {
-        return await _productRepository.GetAllProducts();
+        var response = new BaseResponse<List<Product>>();
+
+        var products = await _productRepository.GetAllProducts();
+
+        if (products == null)
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = "No products found.";
+            return response;
+        }
+
+        response.Status = ResponseStatus.Success;
+        response.Data = products;
+
+        return response;
     }
 
-    public async Task<Product> GetProductById(int id)
+    public async Task<BaseResponse<Product>> GetProductById(int id)
     {
-        return await _productRepository.GetProductById(id);
+        var response = new BaseResponse<Product>();
+
+        var product = await _productRepository.GetProductById(id);
+
+        if (product == null)
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = "Product not found.";
+            return response;
+        }
+
+        response.Status = ResponseStatus.Success;
+        response.Data = product;
+
+        return response;
     }
 
     public async Task<BaseResponse<Product>> CreateProduct(Product product)
@@ -36,6 +64,7 @@ public class ProductService : IProductService
         {
             response.Status = ResponseStatus.Fail;
             response.Message = "Category not found.";
+            return response;
         }
 
         product.Category = category;
