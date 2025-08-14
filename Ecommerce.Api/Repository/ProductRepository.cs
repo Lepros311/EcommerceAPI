@@ -92,9 +92,34 @@ public class ProductRepository : IProductRepository
         return response;
     }
 
-    public Task<Product> UpdateProduct(int id, Product updatedProduct)
+    public async Task<BaseResponse<Product>> UpdateProduct(Product existingProduct)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<Product>();
+
+        try
+        {
+            _dbContext.Products.Update(existingProduct);
+
+            await _dbContext.SaveChangesAsync();
+
+            if (existingProduct == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Product not created.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = existingProduct;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in ProductRepository {nameof(UpdateProduct)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
+
+        return response;
     }
 
     public Task<string> DeleteProduct(int id)

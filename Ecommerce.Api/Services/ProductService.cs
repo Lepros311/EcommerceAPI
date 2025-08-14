@@ -46,9 +46,13 @@ public class ProductService : IProductService
         return productResponse;
     }
 
-    public void UpdateProduct(Product product)
+    public async Task<BaseResponse<Product>> UpdateProduct(Product product)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<Product>();
+
+        response = await _productRepository.UpdateProduct(product);
+
+        return response;
     }
 
     public void DeleteProduct(int id)

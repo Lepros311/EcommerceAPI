@@ -11,7 +11,7 @@ public interface IProductRepository
 
     public Task<BaseResponse<Product>> CreateProduct(Product product);
 
-    public Task<Product> UpdateProduct(int id, Product updatedProduct);
+    public Task<BaseResponse<Product>> UpdateProduct(Product updatedProduct);
 
     public Task<string> DeleteProduct(int id);
 }

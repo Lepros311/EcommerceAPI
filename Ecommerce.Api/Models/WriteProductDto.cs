@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Api.Models;
 
-public class CreateProductDto
+public class WriteProductDto
 {
     [Required]
     public string ProductName { get; set; }
