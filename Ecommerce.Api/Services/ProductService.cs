@@ -35,7 +35,7 @@ public class ProductService : IProductService
         if (categoryResponse.Status == ResponseStatus.Fail)
         {
             productResponse.Status = ResponseStatus.Fail;
-            productResponse.Message = "Category not found.";
+            productResponse.Message = categoryResponse.Message;
             return productResponse;
         }
 

@@ -46,7 +46,7 @@ namespace Ecommerce.Api.Controllers
 
             if (response.Status == ResponseStatus.Fail)
             {
-                return BadRequest(response.Message);
+                return NotFound(response.Message);
             }
 
             var returnedProduct = response.Data;
@@ -74,6 +74,11 @@ namespace Ecommerce.Api.Controllers
 
             var response = await _productService.CreateProduct(product);
 
+            if (response.Message == "Category not found.")
+            {
+                return NotFound(response.Message);
+            }
+
             if (response.Status == ResponseStatus.Fail)
             {
                 return BadRequest(response.Message);
@@ -90,7 +95,6 @@ namespace Ecommerce.Api.Controllers
             };
 
             return CreatedAtAction(nameof(GetProductById), new { id = productDto.ProductId }, productDto);
-
         }
     }
 }
