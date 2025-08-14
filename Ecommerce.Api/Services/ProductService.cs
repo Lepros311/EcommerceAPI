@@ -48,11 +48,20 @@ public class ProductService : IProductService
 
     public async Task<BaseResponse<Product>> UpdateProduct(Product product)
     {
-        var response = new BaseResponse<Product>();
+        var productResponse = new BaseResponse<Product>();
 
-        response = await _productRepository.UpdateProduct(product);
+        var categoryResponse = await _categoryRepository.GetCategoryById(product.CategoryId);
 
-        return response;
+        if (categoryResponse.Status == ResponseStatus.Fail)
+        {
+            productResponse.Status = ResponseStatus.Fail;
+            productResponse.Message = categoryResponse.Message;
+            return productResponse;
+        }
+
+        productResponse = await _productRepository.UpdateProduct(product);
+
+        return productResponse;
     }
 
     public void DeleteProduct(int id)

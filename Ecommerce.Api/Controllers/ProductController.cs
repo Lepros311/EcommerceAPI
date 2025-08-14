@@ -110,15 +110,11 @@ namespace Ecommerce.Api.Controllers
 
             var existingProduct = response.Data;
 
-            var product = new Product
-            {
-                ProductId = existingProduct.ProductId,
-                ProductName = existingProduct.ProductName,
-                Price = existingProduct.Price,
-                CategoryId = existingProduct.CategoryId
-            };
+            existingProduct.ProductName = writeProductDto.ProductName;
+            existingProduct.Price = writeProductDto.Price;
+            existingProduct.CategoryId = writeProductDto.CategoryId;
 
-            response = await _productService.UpdateProduct(product);
+            response = await _productService.UpdateProduct(existingProduct);
 
             if (response.Status == ResponseStatus.Fail)
             {

@@ -100,15 +100,19 @@ public class ProductRepository : IProductRepository
         {
             _dbContext.Products.Update(existingProduct);
 
-            await _dbContext.SaveChangesAsync();
+            var affectedRows = await _dbContext.SaveChangesAsync();
 
-            if (existingProduct == null)
+            if (affectedRows == 0)
             {
                 response.Status = ResponseStatus.Fail;
-                response.Message = "Product not created.";
+                response.Message = "No changes were saved.";
             }
             else
             {
+                await _dbContext.Entry(existingProduct)
+                    .Reference(p => p.Category)
+                    .LoadAsync();
+
                 response.Status = ResponseStatus.Success;
                 response.Data = existingProduct;
             }
