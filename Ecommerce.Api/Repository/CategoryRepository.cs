@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Api.Data;
 using Ecommerce.Api.Models;
-using Microsoft.EntityFrameworkCore;
+using Ecommerce.Api.Responses;
 
 namespace Ecommerce.Api.Repository;
 
@@ -18,11 +18,32 @@ public class CategoryRepository : ICategoryRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Category> GetCategoryById(int id)
+    public async Task<BaseResponse<Category>> GetCategoryById(int id)
     {
-        var category = await _dbContext.Categories.FindAsync(id);
+        var response = new BaseResponse<Category>();
 
-        return category;
+        try
+        {
+            var category = await _dbContext.Categories.FindAsync(id);
+
+            if (category == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Category not found.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = category;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in CategoryRepository {nameof(CategoryRepository)}";
+            response.Status = ResponseStatus.Fail;
+        }
+
+        return response;
     }
 
     public Task<Category> CreateCategory(Category category)

@@ -18,11 +18,9 @@ public class ProductService : IProductService
 
     public async Task<BaseResponse<List<Product>>> GetAllProducts()
     {
-        var response = new BaseResponse<List<Product>>();
+        var response = await _productRepository.GetAllProducts();
 
-        var products = await _productRepository.GetAllProducts();
-
-        if (products == null)
+        if (response.Data == null)
         {
             response.Status = ResponseStatus.Fail;
             response.Message = "No products found.";
@@ -30,18 +28,15 @@ public class ProductService : IProductService
         }
 
         response.Status = ResponseStatus.Success;
-        response.Data = products;
 
         return response;
     }
 
     public async Task<BaseResponse<Product>> GetProductById(int id)
     {
-        var response = new BaseResponse<Product>();
+        var response = await _productRepository.GetProductById(id);
 
-        var product = await _productRepository.GetProductById(id);
-
-        if (product == null)
+        if (response.Data == null)
         {
             response.Status = ResponseStatus.Fail;
             response.Message = "Product not found.";
@@ -49,38 +44,36 @@ public class ProductService : IProductService
         }
 
         response.Status = ResponseStatus.Success;
-        response.Data = product;
 
         return response;
     }
 
     public async Task<BaseResponse<Product>> CreateProduct(Product product)
     {
-        var response = new BaseResponse<Product>();
+        var productResponse = new BaseResponse<Product>();
 
-        var category = await _categoryRepository.GetCategoryById(product.CategoryId);
+        var categoryResponse = await _categoryRepository.GetCategoryById(product.CategoryId);
 
-        if (category == null)
+        if (categoryResponse.Data == null)
         {
-            response.Status = ResponseStatus.Fail;
-            response.Message = "Category not found.";
-            return response;
+            productResponse.Status = ResponseStatus.Fail;
+            productResponse.Message = "Category not found.";
+            return productResponse;
         }
 
-        product.Category = category;
+        product.Category = categoryResponse.Data;
 
-        var createdProduct = await _productRepository.CreateProduct(product);
+        productResponse = await _productRepository.CreateProduct(product);
 
-        if (createdProduct == null)
+        if (productResponse.Data == null)
         {
-            response.Status = ResponseStatus.Fail;
-            response.Message = "Unable to create product.";
+            productResponse.Status = ResponseStatus.Fail;
+            productResponse.Message = "Product not created.";
         }
 
-        response.Status = ResponseStatus.Success;
-        response.Data = createdProduct;
+        productResponse.Status = ResponseStatus.Success;
 
-        return response;
+        return productResponse;
     }
 
     public void UpdateProduct(Product product)

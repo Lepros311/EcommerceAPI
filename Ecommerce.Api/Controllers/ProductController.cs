@@ -19,119 +19,78 @@ namespace Ecommerce.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ProductDto>>> GetAllProducts()
         {
-            BaseResponse<List<Product>>? response = null;
+            var response = await _productService.GetAllProducts();
 
-            try
+            if (response.Status == ResponseStatus.Fail)
             {
-                response = await _productService.GetAllProducts();
-
-                if (response.Status == ResponseStatus.Fail)
-                {
-                    return BadRequest(response.Message);
-                }
-
-                var returnedProducts = response.Data;
-
-                var productDtos = returnedProducts.Select(p => new ProductDto
-                {
-                    ProductId = p.ProductId,
-                    ProductName = p.ProductName,
-                    Price = p.Price,
-                    Category = p.Category.CategoryName
-                }).ToList();
-
-                return Ok(productDtos);
+                return BadRequest(response.Message);
             }
-            catch (ArgumentException ex)
+
+            var returnedProducts = response.Data;
+
+            var productDtos = returnedProducts.Select(p => new ProductDto
             {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                var message = response?.Message ?? $"Internal Server Error: {ex.Message}";
-                return StatusCode(500, message);
-            }
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                Price = p.Price,
+                Category = p.Category.CategoryName
+            }).ToList();
+
+            return Ok(productDtos);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProductById(int id)
         {
-            BaseResponse<Product>? response = null;
+            var response = await _productService.GetProductById(id);
 
-            try
+            if (response.Status == ResponseStatus.Fail)
             {
-                response = await _productService.GetProductById(id);
-
-                if (response.Status == ResponseStatus.Fail)
-                {
-                    return BadRequest(response.Message);
-                }
-
-                var returnedProduct = response.Data;
-
-                var productDto = new ProductDto
-                {
-                    ProductId = returnedProduct.ProductId,
-                    ProductName = returnedProduct.ProductName,
-                    Price = returnedProduct.Price,
-                    Category = returnedProduct.Category.CategoryName
-                };
-
-                return Ok(productDto);
+                return BadRequest(response.Message);
             }
-            catch (ArgumentException ex)
+
+            var returnedProduct = response.Data;
+
+            var productDto = new ProductDto
             {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                var message = response?.Message ?? $"Internal Server Error: {ex.Message}";
-                return StatusCode(500, message);
-            }
+                ProductId = returnedProduct.ProductId,
+                ProductName = returnedProduct.ProductName,
+                Price = returnedProduct.Price,
+                Category = returnedProduct.Category.CategoryName
+            };
+
+            return Ok(productDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] CreateProductDto dto)
         {
-            BaseResponse<Product>? response = null;
-
-            try
+            var product = new Product
             {
-                var product = new Product
-                {
-                    ProductName = dto.ProductName,
-                    Price = dto.Price,
-                    CategoryId = dto.CategoryId
-                };
+                ProductName = dto.ProductName,
+                Price = dto.Price,
+                CategoryId = dto.CategoryId
+            };
 
-                response = await _productService.CreateProduct(product);
+            var response = await _productService.CreateProduct(product);
 
-                if (response.Status == ResponseStatus.Fail)
-                {
-                    return BadRequest(response.Message);
-                }
-
-                var createdProduct = response.Data;
-
-                var productDto = new ProductDto
-                {
-                    ProductId = createdProduct.ProductId,
-                    ProductName = createdProduct.ProductName,
-                    Price = createdProduct.Price,
-                    Category = createdProduct.Category?.CategoryName
-                };
-
-                return CreatedAtAction(nameof(GetProductById), new { id = productDto.ProductId }, productDto);
-            }
-            catch (ArgumentException ex)
+            if (response.Status == ResponseStatus.Fail)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(response.Message);
             }
-            catch (Exception ex)
+
+            var createdProduct = response.Data;
+
+            var productDto = new ProductDto
             {
-                var message = response?.Message ?? $"Internal Server Error: {ex.Message}";
-                return StatusCode(500, message);
-            }
+                ProductId = createdProduct.ProductId,
+                ProductName = createdProduct.ProductName,
+                Price = createdProduct.Price,
+                Category = createdProduct.Category?.CategoryName
+            };
+
+            return CreatedAtAction(nameof(GetProductById), new { id = productDto.ProductId }, productDto);
+
         }
     }
 }

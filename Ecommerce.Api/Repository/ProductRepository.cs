@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Api.Models;
 using Ecommerce.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using Ecommerce.Api.Responses;
 
 namespace Ecommerce.Api.Repository;
 
@@ -13,35 +14,90 @@ public class ProductRepository : IProductRepository
         _dbContext = dbContext;
     }
 
-    public async Task<List<Product>> GetAllProducts()
+    public async Task<BaseResponse<List<Product>>> GetAllProducts()
     {
-        var products = await _dbContext.Products.Include(p => p.Category).ToListAsync();
-
-        return products;
-    }
-
-    public async Task<Product> GetProductById(int id)
-    {
-        var product = await _dbContext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == id);
-
-        return product;
-    }
-
-    public async Task<Product> CreateProduct(Product product)
-    {
-        _dbContext.Products.Add(product);
+        var response = new BaseResponse<List<Product>>();
 
         try
         {
-            await _dbContext.SaveChangesAsync();
+            var products = await _dbContext.Products.Include(p => p.Category).ToListAsync();
+
+            if (products == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "No products found.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = products;
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Save failed: {ex.Message}");
-            throw;
+            response.Message = $"Error in ProductRepository {nameof(GetAllProducts)}";
+            response.Status = ResponseStatus.Fail;
+        }
+        
+        return response;
+    }
+
+    public async Task<BaseResponse<Product>> GetProductById(int id)
+    {
+        var response = new BaseResponse<Product>();
+
+        try
+        {
+            var product = await _dbContext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == id);
+
+            if (product == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Product not found.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = product;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in ProductRepository {nameof(GetProductById)}";
+            response.Status = ResponseStatus.Fail;
         }
 
-        return product;
+        return response;
+    }
+
+    public async Task<BaseResponse<Product>> CreateProduct(Product product)
+    {
+        var response = new BaseResponse<Product>();
+
+        try
+        {
+            _dbContext.Products.Add(product);
+
+            await _dbContext.SaveChangesAsync();
+
+            if (product == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Product not created.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = product;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in ProductRepository {nameof(CreateProduct)}";
+            response.Status = ResponseStatus.Fail;
+        }
+
+        return response;
     }
 
     public Task<Product> UpdateProduct(int id, Product updatedProduct)
