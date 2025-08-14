@@ -39,7 +39,7 @@ public class CategoryRepository : ICategoryRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in CategoryRepository {nameof(CategoryRepository)}";
+            response.Message = $"Error in CategoryRepository {nameof(CategoryRepository)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
 

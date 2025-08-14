@@ -22,20 +22,12 @@ public class ProductRepository : IProductRepository
         {
             var products = await _dbContext.Products.Include(p => p.Category).ToListAsync();
 
-            if (products == null)
-            {
-                response.Status = ResponseStatus.Fail;
-                response.Message = "No products found.";
-            }
-            else
-            {
-                response.Status = ResponseStatus.Success;
-                response.Data = products;
-            }
+            response.Status = ResponseStatus.Success;
+            response.Data = products;
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in ProductRepository {nameof(GetAllProducts)}";
+            response.Message = $"Error in ProductRepository {nameof(GetAllProducts)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
         
@@ -63,7 +55,7 @@ public class ProductRepository : IProductRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in ProductRepository {nameof(GetProductById)}";
+            response.Message = $"Error in ProductRepository {nameof(GetProductById)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
 
@@ -93,7 +85,7 @@ public class ProductRepository : IProductRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in ProductRepository {nameof(CreateProduct)}";
+            response.Message = $"Error in ProductRepository {nameof(CreateProduct)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
 
