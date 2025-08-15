@@ -19,4 +19,7 @@ public class Product
     public Category Category { get; set; }
 
     public List<LineItem> LineItems { get; } = [];
+
+    [Required]
+    public bool IsDeleted { get; set; } = false;
 }

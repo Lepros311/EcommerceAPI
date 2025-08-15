@@ -126,8 +126,37 @@ public class ProductRepository : IProductRepository
         return response;
     }
 
-    public Task<string> DeleteProduct(int id)
+    public async Task<BaseResponse<Product>> DeleteProduct(int id)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<Product>();
+
+        try
+        {
+            response = await GetProductById(id);
+
+            response.Data.IsDeleted = true;
+
+            _dbContext.Products.Update(response.Data);
+
+            var affectedRows = await _dbContext.SaveChangesAsync();
+
+            if (affectedRows == 0)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Deletion failed.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Message = "Product deleted.";
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in ProductRepository {nameof(DeleteProduct)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
+
+        return response;
     }
 }

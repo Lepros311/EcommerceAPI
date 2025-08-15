@@ -17,6 +17,8 @@ public class EcommerceDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
+
         modelBuilder.Entity<Category>().ToTable("Categories");
         modelBuilder.Entity<Product>().ToTable("Products");
         modelBuilder.Entity<Sale>().ToTable("Sales");

@@ -133,5 +133,22 @@ namespace Ecommerce.Api.Controllers
 
             return Ok(productDto);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var response = await _productService.DeleteProduct(id);
+
+            if (response.Message == "Product not found.")
+            {
+                return NotFound(response.Message);
+            }
+            else if (response.Status == ResponseStatus.Fail)
+            {
+                return BadRequest(response.Message);
+            }
+
+            return NoContent();
+        }
     }
 }

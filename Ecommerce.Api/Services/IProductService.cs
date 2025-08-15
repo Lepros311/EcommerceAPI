@@ -13,5 +13,5 @@ public interface IProductService
 
     Task<BaseResponse<Product>> UpdateProduct(Product product);
 
-    void DeleteProduct(int id);
+    Task<BaseResponse<Product>> DeleteProduct(int id);
 }

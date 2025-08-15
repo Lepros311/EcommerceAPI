@@ -64,8 +64,17 @@ public class ProductService : IProductService
         return productResponse;
     }
 
-    public void DeleteProduct(int id)
+    public async Task<BaseResponse<Product>> DeleteProduct(int id)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<Product>();
+
+        response = await _productRepository.GetProductById(id);
+
+        if (response.Status == ResponseStatus.Fail)
+        {
+            return response;
+        }
+
+        return await _productRepository.DeleteProduct(id);
     }
 }
