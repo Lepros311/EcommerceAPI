@@ -23,6 +23,8 @@ public class EcommerceDbContext : DbContext
         {
             entity.ToTable("Categories");
             entity.Property(c => c.CategoryName).IsRequired();
+            entity.Property(c => c.IsDeleted).IsRequired();
+            entity.HasQueryFilter(c => !c.IsDeleted);
         });
 
         modelBuilder.Entity<Product>(entity =>

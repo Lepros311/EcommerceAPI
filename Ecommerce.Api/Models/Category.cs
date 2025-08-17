@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Ecommerce.Api.Models;
+﻿namespace Ecommerce.Api.Models;
 
 public class Category
 {
@@ -9,6 +7,8 @@ public class Category
     public string CategoryName { get; set; }
 
     public List<Product> Products { get; } = [];
+
+    public bool IsDeleted { get; set; } = false;
 
     public override string ToString() => $"{CategoryName}";
 }

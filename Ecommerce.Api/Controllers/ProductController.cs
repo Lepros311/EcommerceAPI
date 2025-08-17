@@ -1,9 +1,7 @@
-using Azure;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Responses;
 using Ecommerce.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Api.Controllers
 {
@@ -69,7 +67,7 @@ namespace Ecommerce.Api.Controllers
                 return BadRequest(responseWithDataDto.Message);
             }
 
-            return CreatedAtAction(nameof(GetProductById), 
+            return CreatedAtAction(nameof(GetProductById),
                 new { id = responseWithDataDto.Data.ProductId }, responseWithDataDto.Data);
         }
 
@@ -81,7 +79,7 @@ namespace Ecommerce.Api.Controllers
             if (response.Message == "Product not found." || response.Message == "Category not found.")
             {
                 return NotFound(response.Message);
-            }        
+            }
 
             if (response.Status == ResponseStatus.Fail)
             {
