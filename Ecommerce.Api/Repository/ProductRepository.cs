@@ -92,14 +92,13 @@ public class ProductRepository : IProductRepository
         return response;
     }
 
-    public async Task<BaseResponse<Product>> UpdateProduct(Product existingProduct)
+    public async Task<BaseResponse<Product>> UpdateProduct(Product updatedProduct)
     {
         var response = new BaseResponse<Product>();
 
         try
         {
-            _dbContext.Products.Update(existingProduct);
-
+            _dbContext.Products.Update(updatedProduct);
             var affectedRows = await _dbContext.SaveChangesAsync();
 
             if (affectedRows == 0)
@@ -109,10 +108,10 @@ public class ProductRepository : IProductRepository
             }
             else
             {
-                await _dbContext.Entry(existingProduct).Reference(p => p.Category).LoadAsync();
+                await _dbContext.Entry(updatedProduct).Reference(p => p.Category).LoadAsync();
 
                 response.Status = ResponseStatus.Success;
-                response.Data = existingProduct;
+                response.Data = updatedProduct;
             }
         }
         catch (Exception ex)
