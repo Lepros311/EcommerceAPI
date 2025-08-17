@@ -17,7 +17,7 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDto>>> GetAllCategories()
+        public async Task<ActionResult<List<CategoryDto>>> GetAllCategories()
         {
             var responseWithDtos = await _categoryService.GetAllCategories();
 
@@ -30,7 +30,7 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetCategoryById(int id)
+        public async Task<ActionResult<CategoryDto>> GetCategoryById(int id)
         {
             var response = await _categoryService.GetCategoryById(id);
 
