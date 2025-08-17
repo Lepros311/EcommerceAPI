@@ -13,45 +13,48 @@ public class EcommerceDbContext : DbContext
 
     public DbSet<Sale> Sales { get; set; }
 
+    public DbSet<LineItem> LineItems { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EcommerceDb;Trusted_Connection=True;Initial Catalog=EcommerceDb");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.ToTable("Categories");
+            entity.Property(c => c.CategoryName).IsRequired();
+        });
 
-        modelBuilder.Entity<Category>().ToTable("Categories");
-        modelBuilder.Entity<Product>().ToTable("Products");
-        modelBuilder.Entity<Sale>().ToTable("Sales");
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.ToTable("Products");
+            entity.Property(p => p.ProductName).IsRequired();
+            entity.Property(p => p.Price).IsRequired().HasColumnType("decimal(18,2)");
+            entity.Property(p => p.CategoryId).IsRequired();
+            entity.Property(p => p.IsDeleted).IsRequired();
+            entity.HasOne(p => p.Category).WithMany(c => c.Products).IsRequired();
+            entity.HasQueryFilter(p => !p.IsDeleted);
+        });
 
-        modelBuilder.Entity<Product>()
-            .HasOne(p => p.Category)
-            .WithMany(c => c.Products)
-            .IsRequired();
+        modelBuilder.Entity<Sale>(entity =>
+        {
+            entity.ToTable("Sales");
+            entity.Property(s => s.DateAndTimeOfSale).IsRequired();
+            entity.Property(s => s.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
+            entity.Ignore(s => s.CalculatedTotal);
+            entity.HasMany(s => s.LineItems).WithOne(li => li.Sale).HasForeignKey(li => li.SaleId).IsRequired();
+        });
 
-        modelBuilder.Entity<LineItem>().ToTable("LineItems");
-
-        modelBuilder.Entity<LineItem>()
-            .HasOne(li => li.Sale)
-            .WithMany(s => s.LineItems)
-            .HasForeignKey(li => li.SaleId);
-
-        modelBuilder.Entity<LineItem>()
-            .HasOne(li => li.Product)
-            .WithMany(p => p.LineItems)
-            .HasForeignKey(li => li.ProductId);
-
-        modelBuilder.Entity<LineItem>()
-            .Property(li => li.UnitPrice)
-            .HasColumnType("decimal(18,2)");
-
-        modelBuilder.Entity<Product>()
-            .Property(p => p.Price)
-            .HasColumnType("decimal(18,2)");
-
-        modelBuilder.Entity<Sale>()
-            .Property(s => s.TotalPrice)
-            .HasColumnType("decimal(18,2)");
-
+        modelBuilder.Entity<LineItem>(entity =>
+        {
+            entity.ToTable("LineItems");
+            entity.Property(li => li.SaleId).IsRequired();
+            entity.Property(li => li.ProductId).IsRequired();
+            entity.Property(li => li.Quantity).IsRequired();
+            entity.Property(li => li.UnitPrice).IsRequired().HasColumnType("decimal(18,2)");
+            entity.HasOne(li => li.Sale).WithMany(s  => s.LineItems).HasForeignKey(li => li.SaleId).IsRequired();
+            entity.HasOne(li => li.Product).WithMany(p => p.LineItems).HasForeignKey(li => li.ProductId).IsRequired();
+        });
 
         modelBuilder.Entity<Category>()
             .HasData(new List<Category>

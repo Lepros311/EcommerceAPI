@@ -6,7 +6,6 @@ public class Category
 {
     public int CategoryId { get; set; }
 
-    [Required]
     public string CategoryName { get; set; }
 
     public List<Product> Products { get; } = [];

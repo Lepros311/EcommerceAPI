@@ -109,9 +109,7 @@ public class ProductRepository : IProductRepository
             }
             else
             {
-                await _dbContext.Entry(existingProduct)
-                    .Reference(p => p.Category)
-                    .LoadAsync();
+                await _dbContext.Entry(existingProduct).Reference(p => p.Category).LoadAsync();
 
                 response.Status = ResponseStatus.Success;
                 response.Data = existingProduct;

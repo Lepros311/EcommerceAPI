@@ -16,9 +16,29 @@ public class ProductService : IProductService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<BaseResponse<List<Product>>> GetAllProducts()
+    public async Task<BaseResponse<List<ProductDto>>> GetAllProducts()
     {
-        return await _productRepository.GetAllProducts();
+        var response = new BaseResponse<List<Product>>();
+        var responseWithDataDto = new BaseResponse<List<ProductDto>>();
+
+        response  = await _productRepository.GetAllProducts();
+
+        if (response.Status == ResponseStatus.Fail)
+        {
+            responseWithDataDto.Status = response.Status;
+            responseWithDataDto.Message = response.Message;
+            return responseWithDataDto;
+        }
+
+        responseWithDataDto.Data = response.Data.Select(p => new ProductDto
+        {
+            ProductId = p.ProductId,
+            ProductName = p.ProductName,
+            Price = p.Price,
+            Category = p.Category.CategoryName
+        }).ToList();
+
+        return responseWithDataDto;
     }
 
     public async Task<BaseResponse<Product>> GetProductById(int id)
@@ -26,31 +46,72 @@ public class ProductService : IProductService
         return await _productRepository.GetProductById(id);
     }
 
-    public async Task<BaseResponse<Product>> CreateProduct(Product product)
+    public async Task<BaseResponse<ProductDto>> CreateProduct(WriteProductDto writeProductDto)
     {
         var productResponse = new BaseResponse<Product>();
+        var productResponseWithDataDto = new BaseResponse<ProductDto>();
 
-        var categoryResponse = await _categoryRepository.GetCategoryById(product.CategoryId);
+        var categoryResponse = await _categoryRepository.GetCategoryById(writeProductDto.CategoryId);
 
         if (categoryResponse.Status == ResponseStatus.Fail)
         {
-            productResponse.Status = ResponseStatus.Fail;
-            productResponse.Message = categoryResponse.Message;
-            return productResponse;
+            productResponseWithDataDto.Status = ResponseStatus.Fail;
+            productResponseWithDataDto.Message = categoryResponse.Message;
+            return productResponseWithDataDto;
         }
 
-        product.Category = categoryResponse.Data;
+        var newProduct = new Product
+        {
+            ProductName = writeProductDto.ProductName,
+            Price = writeProductDto.Price,
+            CategoryId = writeProductDto.CategoryId
+        };
 
-        productResponse = await _productRepository.CreateProduct(product);
+        newProduct.Category = categoryResponse.Data;
 
-        return productResponse;
+        productResponse = await _productRepository.CreateProduct(newProduct);
+
+        if (productResponse.Status == ResponseStatus.Fail)
+        {
+            productResponseWithDataDto.Status = ResponseStatus.Fail;
+            productResponseWithDataDto.Message = productResponse.Message;
+            return productResponseWithDataDto;
+        }
+        else
+        {
+            productResponseWithDataDto.Status = ResponseStatus.Success;
+
+            var newProductDto = new ProductDto
+            {
+                ProductId = newProduct.ProductId,
+                ProductName = newProduct.ProductName,
+                Price = newProduct.Price,
+                Category = newProduct.Category?.CategoryName
+            };
+
+            productResponseWithDataDto.Data = newProductDto;
+        }
+
+        return productResponseWithDataDto;
     }
 
-    public async Task<BaseResponse<Product>> UpdateProduct(Product product)
+    public async Task<BaseResponse<Product>> UpdateProduct(int id, WriteProductDto writeProductDto)
     {
         var productResponse = new BaseResponse<Product>();
 
-        var categoryResponse = await _categoryRepository.GetCategoryById(product.CategoryId);
+        productResponse = await GetProductById(id);
+
+        if (productResponse.Status == ResponseStatus.Fail)
+        {
+            return productResponse;
+        }
+
+        var existingProduct = productResponse.Data;
+
+        existingProduct.ProductName = writeProductDto.ProductName;
+        existingProduct.Price = writeProductDto.Price;
+
+        var categoryResponse = await _categoryRepository.GetCategoryById(writeProductDto.CategoryId);
 
         if (categoryResponse.Status == ResponseStatus.Fail)
         {
@@ -59,7 +120,9 @@ public class ProductService : IProductService
             return productResponse;
         }
 
-        productResponse = await _productRepository.UpdateProduct(product);
+        existingProduct.CategoryId = writeProductDto.CategoryId;
+
+        productResponse = await _productRepository.UpdateProduct(existingProduct);
 
         return productResponse;
     }
