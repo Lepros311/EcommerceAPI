@@ -34,7 +34,7 @@ public class EcommerceDbContext : DbContext
             entity.Property(p => p.Price).IsRequired().HasColumnType("decimal(18,2)");
             entity.Property(p => p.CategoryId).IsRequired();
             entity.Property(p => p.IsDeleted).IsRequired();
-            entity.HasOne(p => p.Category).WithMany(c => c.Products).IsRequired();
+            entity.HasOne(p => p.Category).WithMany(c => c.Products).HasForeignKey(p => p.CategoryId).IsRequired();
             entity.HasQueryFilter(p => !p.IsDeleted);
         });
 

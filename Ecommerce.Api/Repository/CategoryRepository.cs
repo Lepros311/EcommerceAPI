@@ -20,7 +20,7 @@ public class CategoryRepository : ICategoryRepository
 
         try
         {
-            var categories = await _dbContext.Categories.ToListAsync();
+            var categories = await _dbContext.Categories.Include(c => c.Products).ToListAsync();
 
             response.Status = ResponseStatus.Success;
             response.Data = categories;
