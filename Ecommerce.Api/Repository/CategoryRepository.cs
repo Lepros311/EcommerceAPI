@@ -40,7 +40,7 @@ public class CategoryRepository : ICategoryRepository
 
         try
         {
-            var category = await _dbContext.Categories.FindAsync(id);
+            var category = await _dbContext.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.CategoryId == id);
 
             if (category == null)
             {
