@@ -116,6 +116,12 @@ public class CategoryService : ICategoryService
             return response;
         }
 
+        if (response.Data.Products.Count > 0)
+        {
+            response.Message = "Cannot delete categories that contain products.";
+            return response;
+        }
+
         return await _categoryRepository.DeleteCategory(id);
     }
 }
