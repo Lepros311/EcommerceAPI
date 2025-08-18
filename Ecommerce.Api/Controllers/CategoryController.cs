@@ -105,7 +105,7 @@ namespace Ecommerce.Api.Controllers
             }
             else if (response.Message == "Cannot delete categories that contain products.")
             {
-                return BadRequest(response.Message);
+                return Conflict(response.Message);
             }
             else if (response.Status == ResponseStatus.Fail)
             {
