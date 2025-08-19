@@ -8,7 +8,7 @@ public class Sale
 
     public decimal TotalPrice { get; set; }
 
-    public decimal CalculatedTotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);
+    public decimal Subtotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);
 
     public List<LineItem> LineItems { get; } = [];
 }

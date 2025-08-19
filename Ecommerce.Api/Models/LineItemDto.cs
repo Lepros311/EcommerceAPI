@@ -4,13 +4,9 @@ public class LineItemDto
 {
     public int LineItemId { get; set; }
 
-    public int SaleId { get; set; }
+    public string ProductName { get; set; }
 
-    public Sale Sale { get; set; }
-
-    public int ProductId { get; set; }
-
-    public ProductDto ProductDto { get; set; }
+    public string Category { get; set; }
 
     public int Quantity { get; set; }
 

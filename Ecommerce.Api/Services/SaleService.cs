@@ -38,9 +38,10 @@ public class SaleService : ISaleService
             LineItems = s.LineItems.Select(li => new LineItemDto
             {
                 LineItemId = li.LineItemId,
-                ProductId = li.ProductId,
+                ProductName = li.Product.ProductName,
+                Category = li.Product.Category.CategoryName,
                 Quantity = li.Quantity,
-                UnitPrice = li.UnitPrice
+                UnitPrice = li.UnitPrice,
             }).ToList()
         }).ToList();
 

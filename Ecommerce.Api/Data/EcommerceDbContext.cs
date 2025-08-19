@@ -43,7 +43,7 @@ public class EcommerceDbContext : DbContext
             entity.ToTable("Sales");
             entity.Property(s => s.DateAndTimeOfSale).IsRequired();
             entity.Property(s => s.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
-            entity.Ignore(s => s.CalculatedTotal);
+            entity.Ignore(s => s.Subtotal);
             entity.HasMany(s => s.LineItems).WithOne(li => li.Sale).HasForeignKey(li => li.SaleId).IsRequired();
         });
 

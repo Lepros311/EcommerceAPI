@@ -20,7 +20,11 @@ public class SaleRepository : ISaleRepository
 
         try
         {
-            var sales = await _dbContext.Sales.Include(c => c.LineItems).ToListAsync();
+            var sales = await _dbContext.Sales
+                .Include(s => s.LineItems)
+                .ThenInclude(li => li.Product)
+                .ThenInclude(p => p.Category)
+                .ToListAsync();
 
             response.Status = ResponseStatus.Success;
             response.Data = sales;
