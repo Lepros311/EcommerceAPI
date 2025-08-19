@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Api.Models;
 
-public class Sale
+public class SaleDto
 {
     public int SaleId { get; set; }
 
@@ -10,5 +10,5 @@ public class Sale
 
     public decimal CalculatedTotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);
 
-    public List<LineItem> LineItems { get; } = [];
+    public List<LineItemDto> LineItems { get; set; } = [];
 }

@@ -1,9 +1,7 @@
 ﻿namespace Ecommerce.Api.Models;
 
-public class Sale
+public class WriteSaleDto
 {
-    public int SaleId { get; set; }
-
     public DateTime DateAndTimeOfSale { get; set; }
 
     public decimal TotalPrice { get; set; }

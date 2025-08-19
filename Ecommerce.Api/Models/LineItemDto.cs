@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Api.Models;
 
-public class LineItem
+public class LineItemDto
 {
     public int LineItemId { get; set; }
 
@@ -10,7 +10,7 @@ public class LineItem
 
     public int ProductId { get; set; }
 
-    public Product Product { get; set; }
+    public ProductDto ProductDto { get; set; }
 
     public int Quantity { get; set; }
 
