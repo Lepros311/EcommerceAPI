@@ -42,26 +42,30 @@ public class SaleRepository : ISaleRepository
     {
         var response = new BaseResponse<Sale>();
 
-        //        try
-        //        {
-        //            var category = await _dbContext.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.CategoryId == id);
+        try
+        {
+            var sale = await _dbContext.Sales
+                .Include(s => s.LineItems)
+                .ThenInclude(li => li.Product)
+                .ThenInclude(p => p.Category)
+                .FirstOrDefaultAsync(s => s.SaleId == id);
 
-        //            if (category == null)
-        //            {
-        //                response.Status = ResponseStatus.Fail;
-        //                response.Message = "Category not found.";
-        //            }
-        //            else
-        //            {
-        //                response.Status = ResponseStatus.Success;
-        //                response.Data = category;
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            response.Message = $"Error in CategoryRepository {nameof(CategoryRepository)}: {ex.Message}";
-        //            response.Status = ResponseStatus.Fail;
-        //        }
+            if (sale == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Sale not found.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = sale;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in SaleRepository {nameof(SaleRepository)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }
