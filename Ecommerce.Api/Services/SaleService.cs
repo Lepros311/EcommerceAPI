@@ -153,11 +153,13 @@ public class SaleService : ISaleService
             return response;
         }
 
-        var existingLineItems = existingSale.LineItems.ToDictionary(li => li.ProductId);
+        var existingLineItems = existingSale.LineItems
+            .Where(li => li.LineItemId != null)
+            .ToDictionary(li => li.LineItemId);
 
         foreach (var incomingLineItem in writeSaleDto.LineItems)
         {
-            if (incomingLineItem.LineItemId.HasValue && existingLineItems.TryGetValue(incomingLineItem.ProductId, out var existingLineItem))
+            if (incomingLineItem.LineItemId.HasValue && existingLineItems.TryGetValue(incomingLineItem.LineItemId.Value, out var existingLineItem))
             {
                 existingLineItem.Quantity = incomingLineItem.Quantity;
                 existingLineItem.Product = productLookup[incomingLineItem.ProductId];
