@@ -74,28 +74,28 @@ public class SaleRepository : ISaleRepository
     {
         var response = new BaseResponse<Sale>();
 
-        //        try
-        //        {
-        //            _dbContext.Categories.Add(category);
+        try
+        {
+            _dbContext.Sales.Add(sale);
 
-        //            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-        //            if (category == null)
-        //            {
-        //                response.Status = ResponseStatus.Fail;
-        //                response.Message = "Category not created.";
-        //            }
-        //            else
-        //            {
-        //                response.Status = ResponseStatus.Success;
-        //                response.Data = category;
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            response.Message = $"Error in CategoryRepository {nameof(CreateCategory)}: {ex.Message}";
-        //            response.Status = ResponseStatus.Fail;
-        //        }
+            if (sale == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Sale not created.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = sale;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in SaleRepository {nameof(CreateSale)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }

@@ -4,9 +4,5 @@ public class WriteSaleDto
 {
     public DateTime DateAndTimeOfSale { get; set; }
 
-    public decimal TotalPrice { get; set; }
-
-    public decimal CalculatedTotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);
-
-    public List<LineItem> LineItems { get; } = [];
+    public List<WriteLineItemDto> LineItems { get; set; } = new List<WriteLineItemDto>();
 }

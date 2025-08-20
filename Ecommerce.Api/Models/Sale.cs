@@ -10,5 +10,5 @@ public class Sale
 
     public decimal Subtotal => LineItems.Sum(li => li.Quantity * li.UnitPrice);
 
-    public List<LineItem> LineItems { get; } = [];
+    public List<LineItem> LineItems { get; set; } = [];
 }

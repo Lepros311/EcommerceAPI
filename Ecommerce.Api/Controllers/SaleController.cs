@@ -49,6 +49,7 @@ namespace Ecommerce.Api.Controllers
                 LineItems = returnedSale.LineItems.Select(li => new LineItemDto
                 {
                     LineItemId = li.LineItemId,
+                    ProductId = li.ProductId,
                     ProductName = li.Product.ProductName,
                     Category = li.Product.Category.CategoryName,
                     Quantity = li.Quantity,
@@ -59,24 +60,24 @@ namespace Ecommerce.Api.Controllers
             return Ok(saleDto);
         }
 
-        //    [HttpPost]
-        //    public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] WriteCategoryDto writeCategoryDto)
-        //    {
-        //        var responseWithDataDto = await _saleService.CreateCategory(writeCategoryDto);
+        [HttpPost]
+        public async Task<ActionResult<SaleDto>> CreateCategory([FromBody] WriteSaleDto writeSaleDto)
+        {
+            var responseWithDataDto = await _saleService.CreateSale(writeSaleDto);
 
-        //        if (responseWithDataDto.Message == "Category not found.")
-        //        {
-        //            return NotFound(responseWithDataDto.Message);
-        //        }
+            if (responseWithDataDto.Message == "Something not found.")
+            {
+                return NotFound(responseWithDataDto.Message);
+            }
 
-        //        if (responseWithDataDto.Status == ResponseStatus.Fail)
-        //        {
-        //            return BadRequest(responseWithDataDto.Message);
-        //        }
+            if (responseWithDataDto.Status == ResponseStatus.Fail)
+            {
+                return BadRequest(responseWithDataDto.Message);
+            }
 
-        //        return CreatedAtAction(nameof(GetCategoryById),
-        //            new { id = responseWithDataDto.Data.CategoryId }, responseWithDataDto.Data);
-        //    }
+            return CreatedAtAction(nameof(GetSaleById),
+                new { id = responseWithDataDto.Data.SaleId }, responseWithDataDto.Data);
+        }
 
         //    [HttpPut("{id}")]
         //    public async Task<ActionResult<CategoryDto>> UpdateCategory(int id, [FromBody] WriteCategoryDto writeCategoryDto)

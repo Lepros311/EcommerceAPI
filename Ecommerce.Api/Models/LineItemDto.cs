@@ -4,6 +4,8 @@ public class LineItemDto
 {
     public int LineItemId { get; set; }
 
+    public int ProductId { get; set; }
+
     public string ProductName { get; set; }
 
     public string Category { get; set; }

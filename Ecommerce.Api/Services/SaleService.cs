@@ -38,6 +38,7 @@ public class SaleService : ISaleService
             LineItems = s.LineItems.Select(li => new LineItemDto
             {
                 LineItemId = li.LineItemId,
+                ProductId = li.ProductId,
                 ProductName = li.Product.ProductName,
                 Category = li.Product.Category.CategoryName,
                 Quantity = li.Quantity,
@@ -55,34 +56,69 @@ public class SaleService : ISaleService
 
     public async Task<BaseResponse<SaleDto>> CreateSale(WriteSaleDto writeSaleDto)
     {
-        //        var response = new BaseResponse<Category>();
-                var responseWithDataDto = new BaseResponse<SaleDto>();
+        var response = new BaseResponse<Sale>();
+        var responseWithDataDto = new BaseResponse<SaleDto>();
 
-        //        var newCategory = new Category
-        //        {
-        //            CategoryName = writeCategoryDto.CategoryName
-        //        };
+        var productIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
 
-        //        response = await _categoryRepository.CreateCategory(newCategory);
+        var allProducts = await _productRepository.GetAllProducts();
+        var productPriceLookup = allProducts.Data.ToDictionary(p => p.ProductId, p => p.Price);
+        var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
+        var productLookup = allProducts.Data.ToDictionary(p => p.ProductId);
 
-        //        if (response.Status == ResponseStatus.Fail)
-        //        {
-        //            responseWithDataDto.Status = ResponseStatus.Fail;
-        //            responseWithDataDto.Message = response.Message;
-        //            return responseWithDataDto;
-        //        }
-        //        else
-        //        {
-        //            responseWithDataDto.Status = ResponseStatus.Success;
+        var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).ToList();
+        var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
 
-        //            var newCategoryDto = new CategoryDto
-        //            {
-        //                CategoryId = newCategory.CategoryId,
-        //                CategoryName = newCategory.CategoryName,
-        //            };
+        if (missingProductIds.Any())
+        {
+            responseWithDataDto.Status = ResponseStatus.Fail;
+            responseWithDataDto.Message = $"Invalid Product ID(s): {string.Join(", ", missingProductIds)}";
+            return responseWithDataDto;
+        }
 
-        //            responseWithDataDto.Data = newCategoryDto;
-        //        }
+        var lineItems = writeSaleDto.LineItems.Select(li => new LineItem
+        {
+            ProductId = li.ProductId,
+            Quantity = li.Quantity,
+            UnitPrice = productPriceLookup[li.ProductId],
+            Product = productLookup[li.ProductId]
+        }).ToList();
+
+        var newSale = new Sale
+        {
+            DateAndTimeOfSale = writeSaleDto.DateAndTimeOfSale,
+            TotalPrice = lineItems.Sum(li => li.Quantity * li.UnitPrice),
+            LineItems = lineItems
+        };
+
+        response = await _saleRepository.CreateSale(newSale);
+
+        if (response.Status == ResponseStatus.Fail)
+        {
+            responseWithDataDto.Status = ResponseStatus.Fail;
+            responseWithDataDto.Message = response.Message;
+            return responseWithDataDto;
+        }
+
+        responseWithDataDto.Status = ResponseStatus.Success;
+
+        var newSaleDto = new SaleDto
+        {
+            SaleId = newSale.SaleId,
+            DateAndTimeOfSale = newSale.DateAndTimeOfSale,
+            TotalPrice = newSale.TotalPrice,
+            LineItems = newSale.LineItems.Select(li => new LineItemDto
+            {
+                LineItemId = li.LineItemId,
+                ProductId = li.ProductId,
+                ProductName = li.Product.ProductName,
+                Category = li.Product.Category.CategoryName,
+                Quantity = li.Quantity,
+                UnitPrice = li.UnitPrice,
+            }).ToList()
+        };
+
+        responseWithDataDto.Data = newSaleDto;
 
         return responseWithDataDto;
     }
