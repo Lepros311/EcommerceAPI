@@ -104,27 +104,27 @@ public class SaleRepository : ISaleRepository
     {
         var response = new BaseResponse<Sale>();
 
-        //        try
-        //        {
-        //            _dbContext.Categories.Update(updatedCategory);
-        //            var affectedRows = await _dbContext.SaveChangesAsync();
+        try
+        {
+            _dbContext.Sales.Update(updatedSale);
+            var affectedRows = await _dbContext.SaveChangesAsync();
 
-        //            if (affectedRows == 0)
-        //            {
-        //                response.Status = ResponseStatus.Fail;
-        //                response.Message = "No changes were saved.";
-        //            }
-        //            else
-        //            {
-        //                response.Status = ResponseStatus.Success;
-        //                response.Data = updatedCategory;
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            response.Message = $"Error in CategoryRepository {nameof(UpdateCategory)}: {ex.Message}";
-        //            response.Status = ResponseStatus.Fail;
-        //        }
+            if (affectedRows == 0)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "No changes were saved.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = updatedSale;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in SaleRepository {nameof(UpdateSale)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }

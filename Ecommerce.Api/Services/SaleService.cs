@@ -63,8 +63,8 @@ public class SaleService : ISaleService
 
         var allProducts = await _productRepository.GetAllProducts();
         var productPriceLookup = allProducts.Data.ToDictionary(p => p.ProductId, p => p.Price);
-        var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
         var productLookup = allProducts.Data.ToDictionary(p => p.ProductId);
+        var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
 
         var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).ToList();
         var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
@@ -125,20 +125,59 @@ public class SaleService : ISaleService
 
     public async Task<BaseResponse<Sale>> UpdateSale(int id, WriteSaleDto writeSaleDto)
     {
-                var response = new BaseResponse<Sale>();
+        var response = new BaseResponse<Sale>();
 
-        //        response = await GetCategoryById(id);
+        response = await GetSaleById(id);
 
-        //        if (response.Status == ResponseStatus.Fail)
-        //        {
-        //            return response;
-        //        }
+        if (response.Status == ResponseStatus.Fail)
+        {
+            return response;
+        }
 
-        //        var existingCategory = response.Data;
+        var existingSale = response.Data;
 
-        //        existingCategory.CategoryName = writeCategoryDto.CategoryName;
+        var productIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
 
-        //        response = await _categoryRepository.UpdateCategory(existingCategory);
+        var allProducts = await _productRepository.GetAllProducts();
+        var productPriceLookup = allProducts.Data.ToDictionary(p => p.ProductId, p => p.Price);
+        var productLookup = allProducts.Data.ToDictionary(p => p.ProductId);
+        var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
+
+        var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).ToList();
+        var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
+
+        if (missingProductIds.Any())
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = $"Invalid Product ID(s): {string.Join(", ", missingProductIds)}";
+            return response;
+        }
+
+        var existingLineItems = existingSale.LineItems.ToDictionary(li => li.ProductId);
+
+        foreach (var incomingLineItem in writeSaleDto.LineItems)
+        {
+            if (incomingLineItem.LineItemId.HasValue && existingLineItems.TryGetValue(incomingLineItem.ProductId, out var existingLineItem))
+            {
+                existingLineItem.Quantity = incomingLineItem.Quantity;
+                existingLineItem.Product = productLookup[incomingLineItem.ProductId];
+            }
+            else
+            {
+                existingSale.LineItems.Add(new LineItem
+                {
+                    ProductId = incomingLineItem.ProductId,
+                    Quantity = incomingLineItem.Quantity,
+                    UnitPrice = productPriceLookup[incomingLineItem.ProductId],
+                    Product = productLookup[incomingLineItem.ProductId]
+                });
+            }
+        }
+
+        existingSale.DateAndTimeOfSale = writeSaleDto.DateAndTimeOfSale;
+        existingSale.TotalPrice = existingSale.LineItems.Sum(li => li.Quantity * li.UnitPrice);
+
+        response = await _saleRepository.UpdateSale(existingSale);
 
         return response;
     }
