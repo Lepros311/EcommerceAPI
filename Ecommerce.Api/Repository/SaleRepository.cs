@@ -139,6 +139,11 @@ public class SaleRepository : ISaleRepository
 
             response.Data.IsDeleted = true;
 
+            foreach (var lineItem in response.Data.LineItems)
+            {
+                lineItem.IsDeleted = true;
+            }
+
             _dbContext.Sales.Update(response.Data);
             var affectedRows = await _dbContext.SaveChangesAsync();
 

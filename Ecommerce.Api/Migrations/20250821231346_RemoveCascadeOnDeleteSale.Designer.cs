@@ -4,6 +4,7 @@ using Ecommerce.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Api.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250821231346_RemoveCascadeOnDeleteSale")]
+    partial class RemoveCascadeOnDeleteSale
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +79,6 @@ namespace Ecommerce.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LineItemId"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -103,7 +103,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 1,
-                            IsDeleted = false,
                             ProductId = 8,
                             Quantity = 1,
                             SaleId = 1,
@@ -112,7 +111,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 2,
-                            IsDeleted = false,
                             ProductId = 6,
                             Quantity = 1,
                             SaleId = 2,
@@ -121,7 +119,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 3,
-                            IsDeleted = false,
                             ProductId = 3,
                             Quantity = 1,
                             SaleId = 2,
@@ -130,7 +127,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 4,
-                            IsDeleted = false,
                             ProductId = 7,
                             Quantity = 1,
                             SaleId = 3,
@@ -139,7 +135,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 5,
-                            IsDeleted = false,
                             ProductId = 6,
                             Quantity = 1,
                             SaleId = 3,
@@ -148,7 +143,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 6,
-                            IsDeleted = false,
                             ProductId = 1,
                             Quantity = 1,
                             SaleId = 3,
@@ -157,7 +151,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 7,
-                            IsDeleted = false,
                             ProductId = 2,
                             Quantity = 2,
                             SaleId = 4,
@@ -166,7 +159,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 8,
-                            IsDeleted = false,
                             ProductId = 4,
                             Quantity = 2,
                             SaleId = 5,
@@ -175,7 +167,6 @@ namespace Ecommerce.Api.Migrations
                         new
                         {
                             LineItemId = 9,
-                            IsDeleted = false,
                             ProductId = 1,
                             Quantity = 1,
                             SaleId = 5,

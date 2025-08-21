@@ -228,5 +228,3 @@ public class SaleService : ISaleService
         return await _saleRepository.DeleteSale(id);
     }
 }
-
-

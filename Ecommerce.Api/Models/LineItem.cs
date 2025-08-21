@@ -15,4 +15,6 @@ public class LineItem
     public int Quantity { get; set; }
 
     public decimal UnitPrice { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
 }
