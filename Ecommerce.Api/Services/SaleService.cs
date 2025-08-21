@@ -161,6 +161,17 @@ public class SaleService : ISaleService
         var existingProductIds = existingSale.LineItems.Select(li => li.ProductId).ToHashSet();
         var incomingNewProductIds = writeSaleDto.LineItems.Where(li => !li.LineItemId.HasValue).Select(li => li.ProductId).ToList();
         var duplicateProductIds = incomingNewProductIds.Where(pid => existingProductIds.Contains(pid)).ToList();
+        var newLineItems = writeSaleDto.LineItems.Where(li => !existingSale.LineItems.Any(e => e.LineItemId == li.LineItemId)).ToList();
+        var conflictingProductIds = newLineItems.Select(li => li.ProductId).Where(pid => existingProductIds.Contains(pid)).Distinct().ToList();
+        var duplicateProductIdsInNewItems = newLineItems.GroupBy(li => li.ProductId).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+        var allConflictingProductIds = duplicateProductIdsInNewItems.Concat(conflictingProductIds).Distinct().ToList();
+
+        if (allConflictingProductIds.Any())
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = $"Cannot create duplicate line items for the same product. Duplicate Product ID(s): {string.Join(", ", allConflictingProductIds)}";
+            return response;
+        }
 
         if (duplicateProductIds.Any())
         {
