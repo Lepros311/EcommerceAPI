@@ -97,25 +97,21 @@ namespace Ecommerce.Api.Controllers
             return NoContent();
         }
 
-        //    [HttpDelete("{id}")]
-        //    public async Task<IActionResult> DeleteCategory(int id)
-        //    {
-        //        var response = await _saleService.DeleteCategory(id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var response = await _saleService.DeleteSale(id);
 
-        //        if (response.Message == "Category not found.")
-        //        {
-        //            return NotFound(response.Message);
-        //        }
-        //        else if (response.Message == "Cannot delete categories that contain products.")
-        //        {
-        //            return Conflict(response.Message);
-        //        }
-        //        else if (response.Status == ResponseStatus.Fail)
-        //        {
-        //            return BadRequest(response.Message);
-        //        }
+            if (response.Message == "Sale not found.")
+            {
+                return NotFound(response.Message);
+            }
+            else if (response.Status == ResponseStatus.Fail)
+            {
+                return BadRequest(response.Message);
+            }
 
-        //        return NoContent();
-        //    }
+            return NoContent();
+        }
     }
 }

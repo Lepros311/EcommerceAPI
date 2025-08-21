@@ -216,20 +216,14 @@ public class SaleService : ISaleService
 
     public async Task<BaseResponse<Sale>> DeleteSale(int id)
     {
-        //var response = new BaseResponse<Sale>();
+        var response = new BaseResponse<Sale>();
 
-        //        response = await _categoryRepository.GetCategoryById(id);
+        response = await _saleRepository.GetSaleById(id);
 
-        //        if (response.Status == ResponseStatus.Fail)
-        //        {
-        //            return response;
-        //        }
-
-        //        if (response.Data.Products.Count > 0)
-        //        {
-        //            response.Message = "Cannot delete categories that contain products.";
-        //            return response;
-        //        }
+        if (response.Status == ResponseStatus.Fail)
+        {
+            return response;
+        }
 
         return await _saleRepository.DeleteSale(id);
     }

@@ -45,6 +45,7 @@ public class EcommerceDbContext : DbContext
             entity.Property(s => s.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
             entity.Ignore(s => s.Subtotal);
             entity.HasMany(s => s.LineItems).WithOne(li => li.Sale).HasForeignKey(li => li.SaleId).IsRequired();
+            entity.HasQueryFilter(s => !s.IsDeleted);
         });
 
         modelBuilder.Entity<LineItem>(entity =>

@@ -133,31 +133,31 @@ public class SaleRepository : ISaleRepository
     {
         var response = new BaseResponse<Sale>();
 
-        //        try
-        //        {
-        //            response = await GetCategoryById(id);
+        try
+        {
+            response = await GetSaleById(id);
 
-        //            response.Data.IsDeleted = true;
+            response.Data.IsDeleted = true;
 
-        //            _dbContext.Categories.Update(response.Data);
-        //            var affectedRows = await _dbContext.SaveChangesAsync();
+            _dbContext.Sales.Update(response.Data);
+            var affectedRows = await _dbContext.SaveChangesAsync();
 
-        //            if (affectedRows == 0)
-        //            {
-        //                response.Status = ResponseStatus.Fail;
-        //                response.Message = "Deletion failed.";
-        //            }
-        //            else
-        //            {
-        //                response.Status = ResponseStatus.Success;
-        //                response.Message = "Category deleted.";
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            response.Message = $"Error in CategoryRepository {nameof(DeleteCategory)}: {ex.Message}";
-        //            response.Status = ResponseStatus.Fail;
-        //        }
+            if (affectedRows == 0)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Deletion failed.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Message = "Sale deleted.";
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in SaleRepository {nameof(DeleteSale)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }
