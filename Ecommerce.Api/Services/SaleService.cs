@@ -136,6 +136,18 @@ public class SaleService : ISaleService
 
         var existingSale = response.Data;
 
+        var existingLineItems = existingSale.LineItems.Where(li => li.LineItemId != null).ToDictionary(li => li.LineItemId);
+        var validLineItemIds = existingSale.LineItems.Where(li => li.LineItemId != 0).Select(li => li.LineItemId).ToHashSet();
+        var incomingLineItemIds = writeSaleDto.LineItems.Where(li => li.LineItemId.HasValue && li.LineItemId.Value != 0).Select(li => li.LineItemId.Value).ToList();
+        var invalidLineItemIds = incomingLineItemIds.Where(id => !validLineItemIds.Contains(id)).ToList();
+
+        if (invalidLineItemIds.Any())
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = $"Invalid Line Item ID(s): {string.Join(", ", invalidLineItemIds)}";
+            return response;
+        }
+
         var productIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
 
         var allProducts = await _productRepository.GetAllProducts();
@@ -146,16 +158,23 @@ public class SaleService : ISaleService
         var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).ToList();
         var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
 
+        var existingProductIds = existingSale.LineItems.Select(li => li.ProductId).ToHashSet();
+        var incomingNewProductIds = writeSaleDto.LineItems.Where(li => !li.LineItemId.HasValue).Select(li => li.ProductId).ToList();
+        var duplicateProductIds = incomingNewProductIds.Where(pid => existingProductIds.Contains(pid)).ToList();
+
+        if (duplicateProductIds.Any())
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = "Cannot create duplicate line items for the same product.";
+            return response;
+        }
+
         if (missingProductIds.Any())
         {
             response.Status = ResponseStatus.Fail;
             response.Message = $"Invalid Product ID(s): {string.Join(", ", missingProductIds)}";
             return response;
         }
-
-        var existingLineItems = existingSale.LineItems
-            .Where(li => li.LineItemId != null)
-            .ToDictionary(li => li.LineItemId);
 
         foreach (var incomingLineItem in writeSaleDto.LineItems)
         {
