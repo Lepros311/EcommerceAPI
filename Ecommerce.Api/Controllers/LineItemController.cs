@@ -29,28 +29,31 @@ namespace Ecommerce.Api.Controllers
             return Ok(responseWithDtos.Data);
         }
 
-        //        [HttpGet("{id}")]
-        //        public async Task<ActionResult<ProductDto>> GetProductById(int id)
-        //        {
-        //            var response = await _productService.GetProductById(id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<LineItemDto>> GetLineItemById(int id)
+        {
+            var response = await _lineItemService.GetLineItemById(id);
 
-        //            if (response.Status == ResponseStatus.Fail)
-        //            {
-        //                return NotFound(response.Message);
-        //            }
+            if (response.Status == ResponseStatus.Fail)
+            {
+                return NotFound(response.Message);
+            }
 
-        //            var returnedProduct = response.Data;
+            var returnedLineItem = response.Data;
 
-        //            var productDto = new ProductDto
-        //            {
-        //                ProductId = returnedProduct.ProductId,
-        //                ProductName = returnedProduct.ProductName,
-        //                Price = returnedProduct.Price,
-        //                Category = returnedProduct.Category.CategoryName
-        //            };
+            var lineItemDto = new LineItemDto
+            {
+                LineItemId = returnedLineItem.LineItemId,
+                ProductId = returnedLineItem.ProductId,
+                ProductName = returnedLineItem.Product.ProductName,
+                Category = returnedLineItem.Product.Category.CategoryName,
+                Quantity = returnedLineItem.Quantity,
+                UnitPrice = returnedLineItem.UnitPrice,
+                SaleId = returnedLineItem.SaleId,
+            };
 
-        //            return Ok(productDto);
-        //        }
+            return Ok(lineItemDto);
+        }
 
         //        [HttpPost]
         //        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] WriteProductDto writeProductDto)

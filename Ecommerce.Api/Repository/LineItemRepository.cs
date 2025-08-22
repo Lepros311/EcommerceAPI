@@ -42,26 +42,30 @@ public class LineItemRepository : ILineItemRepository
     {
             var response = new BaseResponse<LineItem>();
 
-        //    try
-        //    {
-        //        var product = await _dbContext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == id);
+        try
+        {
+            var lineItem = await _dbContext.LineItems
+                .Include(li => li.Sale)
+                .Include(li => li.Product)
+                .ThenInclude(li => li.Category)
+                .FirstOrDefaultAsync(li => li.LineItemId == id);
 
-        //        if (product == null)
-        //        {
-        //            response.Status = ResponseStatus.Fail;
-        //            response.Message = "Product not found.";
-        //        }
-        //        else
-        //        {
-        //            response.Status = ResponseStatus.Success;
-        //            response.Data = product;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Message = $"Error in ProductRepository {nameof(GetProductById)}: {ex.Message}";
-        //        response.Status = ResponseStatus.Fail;
-        //    }
+            if (lineItem == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Line Item not found.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = lineItem;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in LineItemRepository {nameof(GetLineItemById)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }
