@@ -4,5 +4,5 @@ public class WriteSaleDto
 {
     public DateTime DateAndTimeOfSale { get; set; }
 
-    public List<WriteLineItemDto> LineItems { get; set; } = new List<WriteLineItemDto>();
+    public List<WriteLineItemOnSaleDto> LineItems { get; set; } = new List<WriteLineItemOnSaleDto>();
 }

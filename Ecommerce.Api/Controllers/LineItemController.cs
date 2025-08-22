@@ -55,24 +55,24 @@ namespace Ecommerce.Api.Controllers
             return Ok(lineItemDto);
         }
 
-        //        [HttpPost]
-        //        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] WriteProductDto writeProductDto)
-        //        {
-        //            var responseWithDataDto = await _productService.CreateProduct(writeProductDto);
+        [HttpPost]
+        public async Task<ActionResult<LineItemDto>> CreateLineItem([FromBody] WriteLineItemDto writeLineItemDto)
+        {
+            var responseWithDataDto = await _lineItemService.CreateLineItem(writeLineItemDto);
 
-        //            if (responseWithDataDto.Message == "Category not found.")
-        //            {
-        //                return NotFound(responseWithDataDto.Message);
-        //            }
+            if (responseWithDataDto.Message == "Sale not found.")
+            {
+                return NotFound(responseWithDataDto.Message);
+            }
 
-        //            if (responseWithDataDto.Status == ResponseStatus.Fail)
-        //            {
-        //                return BadRequest(responseWithDataDto.Message);
-        //            }
+            if (responseWithDataDto.Status == ResponseStatus.Fail)
+            {
+                return BadRequest(responseWithDataDto.Message);
+            }
 
-        //            return CreatedAtAction(nameof(GetProductById),
-        //                new { id = responseWithDataDto.Data.ProductId }, responseWithDataDto.Data);
-        //        }
+            return CreatedAtAction(nameof(GetLineItemById),
+                new { id = responseWithDataDto.Data.LineItemId }, responseWithDataDto.Data);
+        }
 
         //        [HttpPut("{id}")]
         //        public async Task<ActionResult<ProductDto>> UpdateProduct(int id, [FromBody] WriteProductDto writeProductDto)
