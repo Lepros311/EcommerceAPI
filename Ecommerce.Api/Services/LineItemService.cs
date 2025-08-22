@@ -161,6 +161,7 @@ public class LineItemService : ILineItemService
 
         existingLineItem.ProductId = writeLineItemDto.ProductId;
         existingLineItem.Quantity = writeLineItemDto.Quantity;
+        existingLineItem.UnitPrice = productResponse.Data.Price;
         existingLineItem.SaleId = writeLineItemDto.SaleId;
 
         lineItemResponse = await _lineItemRepository.UpdateLineItem(existingLineItem);

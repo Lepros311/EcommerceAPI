@@ -102,31 +102,31 @@ public class LineItemRepository : ILineItemRepository
 
     public async Task<BaseResponse<LineItem>> UpdateLineItem(LineItem updatedLineItem)
     {
-            var response = new BaseResponse<LineItem>();
+        var response = new BaseResponse<LineItem>();
 
-        //    try
-        //    {
-        //        _dbContext.Products.Update(updatedProduct);
-        //        var affectedRows = await _dbContext.SaveChangesAsync();
+        try
+        {
+            _dbContext.LineItems.Update(updatedLineItem);
+            var affectedRows = await _dbContext.SaveChangesAsync();
 
-        //        if (affectedRows == 0)
-        //        {
-        //            response.Status = ResponseStatus.Fail;
-        //            response.Message = "No changes were saved.";
-        //        }
-        //        else
-        //        {
-        //            await _dbContext.Entry(updatedProduct).Reference(p => p.Category).LoadAsync();
+            if (affectedRows == 0)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "No changes were saved.";
+            }
+            else
+            {
+                await _dbContext.Entry(updatedLineItem).Reference(li => li.Sale).LoadAsync();
 
-        //            response.Status = ResponseStatus.Success;
-        //            response.Data = updatedProduct;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Message = $"Error in ProductRepository {nameof(UpdateProduct)}: {ex.Message}";
-        //        response.Status = ResponseStatus.Fail;
-        //    }
+                response.Status = ResponseStatus.Success;
+                response.Data = updatedLineItem;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in LineItemRepository {nameof(UpdateLineItem)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }
