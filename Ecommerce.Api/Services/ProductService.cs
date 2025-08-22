@@ -63,7 +63,7 @@ public class ProductService : IProductService
         if (writeProductDto.Price < 0)
         {
             productResponseWithDataDto.Status = ResponseStatus.Fail;
-            productResponseWithDataDto.Message = "Product price cannot be less than 0.";
+            productResponseWithDataDto.Message = "Product price must be greater than 0.";
             return productResponseWithDataDto;
         }
 
@@ -116,7 +116,7 @@ public class ProductService : IProductService
         if (writeProductDto.Price < 0)
         {
             productResponse.Status = ResponseStatus.Fail;
-            productResponse.Message = "Product price cannot be less than 0.";
+            productResponse.Message = "Product price must be greater than 0.";
             return productResponse;
         }
 

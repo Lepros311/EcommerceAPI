@@ -171,14 +171,14 @@ public class LineItemService : ILineItemService
 
     public async Task<BaseResponse<LineItem>> DeleteLineItem(int id)
     {
-        //    var response = new BaseResponse<Product>();
+        var response = new BaseResponse<LineItem>();
 
-        //    response = await _productRepository.GetProductById(id);
+        response = await _lineItemRepository.GetLineItemById(id);
 
-        //    if (response.Status == ResponseStatus.Fail)
-        //    {
-        //        return response;
-        //    }
+        if (response.Status == ResponseStatus.Fail)
+        {
+            return response;
+        }
 
         return await _lineItemRepository.DeleteLineItem(id);
     }

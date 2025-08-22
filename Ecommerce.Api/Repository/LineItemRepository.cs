@@ -40,7 +40,7 @@ public class LineItemRepository : ILineItemRepository
 
     public async Task<BaseResponse<LineItem>> GetLineItemById(int id)
     {
-            var response = new BaseResponse<LineItem>();
+        var response = new BaseResponse<LineItem>();
 
         try
         {
@@ -133,34 +133,34 @@ public class LineItemRepository : ILineItemRepository
 
     public async Task<BaseResponse<LineItem>> DeleteLineItem(int id)
     {
-            var response = new BaseResponse<LineItem>();
+        var response = new BaseResponse<LineItem>();
 
-        //    try
-        //    {
-        //        response = await GetProductById(id);
+        try
+        {
+            response = await GetLineItemById(id);
 
-        //        response.Data.IsDeleted = true;
+            response.Data.IsDeleted = true;
 
-        //        _dbContext.Products.Update(response.Data);
+            _dbContext.LineItems.Update(response.Data);
 
-        //        var affectedRows = await _dbContext.SaveChangesAsync();
+            var affectedRows = await _dbContext.SaveChangesAsync();
 
-        //        if (affectedRows == 0)
-        //        {
-        //            response.Status = ResponseStatus.Fail;
-        //            response.Message = "Deletion failed.";
-        //        }
-        //        else
-        //        {
-        //            response.Status = ResponseStatus.Success;
-        //            response.Message = "Product deleted.";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Message = $"Error in ProductRepository {nameof(DeleteProduct)}: {ex.Message}";
-        //        response.Status = ResponseStatus.Fail;
-        //    }
+            if (affectedRows == 0)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Deletion failed.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Message = "Line Item deleted.";
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in LineItemRepository {nameof(DeleteLineItem)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }

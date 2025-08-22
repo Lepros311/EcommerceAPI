@@ -92,21 +92,21 @@ namespace Ecommerce.Api.Controllers
             return NoContent();
         }
 
-        //        [HttpDelete("{id}")]
-        //        public async Task<IActionResult> DeleteProduct(int id)
-        //        {
-        //            var response = await _productService.DeleteProduct(id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLineItem(int id)
+        {
+            var response = await _lineItemService.DeleteLineItem(id);
 
-        //            if (response.Message == "Product not found.")
-        //            {
-        //                return NotFound(response.Message);
-        //            }
-        //            else if (response.Status == ResponseStatus.Fail)
-        //            {
-        //                return BadRequest(response.Message);
-        //            }
+            if (response.Message == "Line Item not found.")
+            {
+                return NotFound(response.Message);
+            }
+            else if (response.Status == ResponseStatus.Fail)
+            {
+                return BadRequest(response.Message);
+            }
 
-        //            return NoContent();
-        //        }
+            return NoContent();
+        }
     }
 }
