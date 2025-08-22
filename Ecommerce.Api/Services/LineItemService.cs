@@ -30,12 +30,15 @@ public class LineItemService : ILineItemService
             return responseWithDataDto;
         }
 
-        responseWithDataDto.Data = response.Data.Select(p => new LineItemDto
+        responseWithDataDto.Data = response.Data.Select(li => new LineItemDto
         {
-            ProductId = p.ProductId,
-            ProductName = p.ProductName,
-            Price = p.Price,
-            Category = p.Category.CategoryName
+            LineItemId = li.LineItemId,
+            ProductId = li.ProductId,
+            ProductName = li.Product.ProductName,
+            Category = li.Product.Category.CategoryName,
+            Quantity = li.Quantity,
+            UnitPrice = li.UnitPrice,
+            SaleId = li.SaleId,
         }).ToList();
 
         return responseWithDataDto;
@@ -48,8 +51,8 @@ public class LineItemService : ILineItemService
 
     public async Task<BaseResponse<LineItemDto>> CreateLineItem(WriteLineItemDto writeLineItemDto)
     {
-        //    var productResponse = new BaseResponse<Product>();
-            var productResponseWithDataDto = new BaseResponse<LineItemDto>();
+            var lineItemResponse = new BaseResponse<LineItem>();
+            var lineItemResponseWithDataDto = new BaseResponse<LineItemDto>();
 
         //    var categoryResponse = await _categoryRepository.GetCategoryById(writeProductDto.CategoryId);
 
@@ -99,7 +102,7 @@ public class LineItemService : ILineItemService
         //        productResponseWithDataDto.Data = newProductDto;
         //    }
 
-        return productResponseWithDataDto;
+        return lineItemResponseWithDataDto;
     }
 
     public async Task<BaseResponse<LineItem>> UpdateLineItem(int id, WriteLineItemDto writeLineItemDto)

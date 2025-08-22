@@ -20,7 +20,11 @@ public class LineItemRepository : ILineItemRepository
 
         try
         {
-            var lineItems = await _dbContext.LineItems.Include(p => p.Sale).ToListAsync();
+            var lineItems = await _dbContext.LineItems
+                .Include(li => li.Sale)
+                .Include(li => li.Product)
+                .ThenInclude(li => li.Category)
+                .ToListAsync();
 
             response.Status = ResponseStatus.Success;
             response.Data = lineItems;

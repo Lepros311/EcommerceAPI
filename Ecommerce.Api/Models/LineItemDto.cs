@@ -13,4 +13,6 @@ public class LineItemDto
     public int Quantity { get; set; }
 
     public decimal UnitPrice { get; set; }
+
+    public int SaleId { get; set; }
 }

@@ -11,7 +11,7 @@ namespace Ecommerce.Api.Controllers
     {
         private readonly ILineItemService _lineItemService;
 
-        public LineItemController(IProductService lineItemService)
+        public LineItemController(ILineItemService lineItemService)
         {
             _lineItemService = lineItemService;
         }

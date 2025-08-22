@@ -17,6 +17,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ISaleService, SaleService>();
+builder.Services.AddScoped<ILineItemRepository, LineItemRepository>();
+builder.Services.AddScoped<ILineItemService, LineItemService>();
 
 builder.Services.AddOpenApi();
 
