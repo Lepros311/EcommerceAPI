@@ -60,6 +60,13 @@ public class ProductService : IProductService
             return productResponseWithDataDto;
         }
 
+        if (writeProductDto.Price < 0)
+        {
+            productResponseWithDataDto.Status = ResponseStatus.Fail;
+            productResponseWithDataDto.Message = "Product price cannot be less than 0.";
+            return productResponseWithDataDto;
+        }
+
         var newProduct = new Product
         {
             ProductName = writeProductDto.ProductName,
@@ -103,6 +110,13 @@ public class ProductService : IProductService
 
         if (productResponse.Status == ResponseStatus.Fail)
         {
+            return productResponse;
+        }
+
+        if (writeProductDto.Price < 0)
+        {
+            productResponse.Status = ResponseStatus.Fail;
+            productResponse.Message = "Product price cannot be less than 0.";
             return productResponse;
         }
 

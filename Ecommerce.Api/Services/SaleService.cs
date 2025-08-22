@@ -59,6 +59,13 @@ public class SaleService : ISaleService
         var response = new BaseResponse<Sale>();
         var responseWithDataDto = new BaseResponse<SaleDto>();
 
+        if (writeSaleDto.LineItems.Select(li => li.Quantity < 0).Any())
+        {
+            responseWithDataDto.Status = ResponseStatus.Fail;
+            responseWithDataDto.Message = "Quantity must be greater than 0.";
+            return responseWithDataDto;
+        }
+
         var productIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
 
         var allProducts = await _productRepository.GetAllProducts();
@@ -131,6 +138,13 @@ public class SaleService : ISaleService
 
         if (response.Status == ResponseStatus.Fail)
         {
+            return response;
+        }
+
+        if (writeSaleDto.LineItems.Select(li => li.Quantity < 0).Any())
+        {
+            response.Status = ResponseStatus.Fail;
+            response.Message = "Quantity must be greater than 0.";
             return response;
         }
 

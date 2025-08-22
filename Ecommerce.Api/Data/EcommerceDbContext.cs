@@ -29,7 +29,7 @@ public class EcommerceDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.ToTable("Products");
+            entity.ToTable("Products", t => t.HasCheckConstraint("CK_Products_Price", "Price >= 0"));
             entity.Property(p => p.ProductName).IsRequired();
             entity.Property(p => p.Price).IsRequired().HasColumnType("decimal(18,2)");
             entity.Property(p => p.CategoryId).IsRequired();
@@ -50,7 +50,7 @@ public class EcommerceDbContext : DbContext
 
         modelBuilder.Entity<LineItem>(entity =>
         {
-            entity.ToTable("LineItems");
+            entity.ToTable("LineItems", t => t.HasCheckConstraint("CK_LineItems_Quantity", "Quantity > 0"));
             entity.Property(li => li.SaleId).IsRequired();
             entity.Property(li => li.ProductId).IsRequired();
             entity.Property(li => li.Quantity).IsRequired();
