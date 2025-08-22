@@ -74,23 +74,23 @@ namespace Ecommerce.Api.Controllers
                 new { id = responseWithDataDto.Data.LineItemId }, responseWithDataDto.Data);
         }
 
-        //        [HttpPut("{id}")]
-        //        public async Task<ActionResult<ProductDto>> UpdateProduct(int id, [FromBody] WriteProductDto writeProductDto)
-        //        {
-        //            var response = await _productService.UpdateProduct(id, writeProductDto);
+        [HttpPut("{id}")]
+        public async Task<ActionResult<LineItemDto>> UpdateLineItem(int id, [FromBody] WriteLineItemDto writeLineItemDto)
+        {
+            var response = await _lineItemService.UpdateLineItem(id, writeLineItemDto);
 
-        //            if (response.Message == "Product not found." || response.Message == "Category not found.")
-        //            {
-        //                return NotFound(response.Message);
-        //            }
+            if (response.Message == "Line Item not found." || response.Message == "Sale not found." || response.Message == "Product not found.")
+            {
+                return NotFound(response.Message);
+            }
 
-        //            if (response.Status == ResponseStatus.Fail)
-        //            {
-        //                return BadRequest(response.Message);
-        //            }
+            if (response.Status == ResponseStatus.Fail)
+            {
+                return BadRequest(response.Message);
+            }
 
-        //            return NoContent();
-        //        }
+            return NoContent();
+        }
 
         //        [HttpDelete("{id}")]
         //        public async Task<IActionResult> DeleteProduct(int id)

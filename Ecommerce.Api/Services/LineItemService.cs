@@ -108,7 +108,10 @@ public class LineItemService : ILineItemService
             {
                 LineItemId = newLineItem.LineItemId,
                 ProductId = newLineItem.ProductId,
+                ProductName = newLineItem.Product.ProductName,
+                Category = newLineItem.Product.Category.ToString(),
                 Quantity = newLineItem.Quantity,
+                UnitPrice = newLineItem.Product.Price,
                 SaleId = newLineItem.SaleId,
             };
 
@@ -120,39 +123,47 @@ public class LineItemService : ILineItemService
 
     public async Task<BaseResponse<LineItem>> UpdateLineItem(int id, WriteLineItemDto writeLineItemDto)
     {
-            var lineItemResponse = new BaseResponse<LineItem>();
+        var lineItemResponse = new BaseResponse<LineItem>();
 
-        //    productResponse = await GetProductById(id);
+        lineItemResponse = await GetLineItemById(id);
 
-        //    if (productResponse.Status == ResponseStatus.Fail)
-        //    {
-        //        return productResponse;
-        //    }
+        if (lineItemResponse.Status == ResponseStatus.Fail)
+        {
+            return lineItemResponse;
+        }
 
-        //    if (writeProductDto.Price < 0)
-        //    {
-        //        productResponse.Status = ResponseStatus.Fail;
-        //        productResponse.Message = "Product price cannot be less than 0.";
-        //        return productResponse;
-        //    }
+        if (writeLineItemDto.Quantity <= 0)
+        {
+            lineItemResponse.Status = ResponseStatus.Fail;
+            lineItemResponse.Message = "Quantity must be greater than 0.";
+            return lineItemResponse;
+        }
 
-        //    var existingProduct = productResponse.Data;
+        var saleResponse = await _saleRepository.GetSaleById(writeLineItemDto.SaleId);
 
-        //    existingProduct.ProductName = writeProductDto.ProductName;
-        //    existingProduct.Price = writeProductDto.Price;
+        if (saleResponse.Status == ResponseStatus.Fail)
+        {
+            lineItemResponse.Status = ResponseStatus.Fail;
+            lineItemResponse.Message = saleResponse.Message;
+            return lineItemResponse;
+        }
 
-        //    var categoryResponse = await _categoryRepository.GetCategoryById(writeProductDto.CategoryId);
+        var productResponse = await _productRepository.GetProductById(writeLineItemDto.ProductId);
 
-        //    if (categoryResponse.Status == ResponseStatus.Fail)
-        //    {
-        //        productResponse.Status = ResponseStatus.Fail;
-        //        productResponse.Message = categoryResponse.Message;
-        //        return productResponse;
-        //    }
+        if (productResponse.Status == ResponseStatus.Fail)
+        {
+            lineItemResponse.Status = ResponseStatus.Fail;
+            lineItemResponse.Message = productResponse.Message;
+            return lineItemResponse;
+        }
 
-        //    existingProduct.CategoryId = writeProductDto.CategoryId;
+        var existingLineItem = lineItemResponse.Data;
 
-        //    productResponse = await _productRepository.UpdateProduct(existingProduct);
+        existingLineItem.ProductId = writeLineItemDto.ProductId;
+        existingLineItem.Quantity = writeLineItemDto.Quantity;
+        existingLineItem.SaleId = writeLineItemDto.SaleId;
+
+        lineItemResponse = await _lineItemRepository.UpdateLineItem(existingLineItem);
 
         return lineItemResponse;
     }

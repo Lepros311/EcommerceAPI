@@ -80,9 +80,9 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<SaleDto>> UpdateSale(int id, [FromBody] WriteSaleDto writeSaleDto)
+        public async Task<ActionResult<SaleDto>> UpdateSale(int id, [FromBody] UpdateSaleDto updateSaleDto)
         {
-            var response = await _saleService.UpdateSale(id, writeSaleDto);
+            var response = await _saleService.UpdateSale(id, updateSaleDto);
 
             if (response.Message == "Product not found.")
             {

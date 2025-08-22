@@ -11,7 +11,7 @@ public interface ISaleService
 
     Task<BaseResponse<SaleDto>> CreateSale(WriteSaleDto sale);
 
-    Task<BaseResponse<Sale>> UpdateSale(int id, WriteSaleDto sale);
+    Task<BaseResponse<Sale>> UpdateSale(int id, UpdateSaleDto sale);
 
     Task<BaseResponse<Sale>> DeleteSale(int id);
 }

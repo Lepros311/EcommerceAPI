@@ -1,8 +1,8 @@
 ﻿namespace Ecommerce.Api.Models;
 
-public class WriteLineItemOnSaleDto
+public class UpdateLineItemOnSaleDto
 {
-    public int LineItemId { get; set; }
+    public int? LineItemId { get; set; }
 
     public int ProductId { get; set; }
 

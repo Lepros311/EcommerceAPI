@@ -130,7 +130,7 @@ public class SaleService : ISaleService
         return responseWithDataDto;
     }
 
-    public async Task<BaseResponse<Sale>> UpdateSale(int id, WriteSaleDto writeSaleDto)
+    public async Task<BaseResponse<Sale>> UpdateSale(int id, UpdateSaleDto updateSaleDto)
     {
         var response = new BaseResponse<Sale>();
 
@@ -141,7 +141,7 @@ public class SaleService : ISaleService
             return response;
         }
 
-        if (writeSaleDto.LineItems.Select(li => li.Quantity < 0).Any())
+        if (updateSaleDto.LineItems.Select(li => li.Quantity < 0).Any())
         {
             response.Status = ResponseStatus.Fail;
             response.Message = "Quantity must be greater than 0.";
@@ -152,7 +152,7 @@ public class SaleService : ISaleService
 
         var existingLineItems = existingSale.LineItems.Where(li => li.LineItemId != null).ToDictionary(li => li.LineItemId);
         var validLineItemIds = existingSale.LineItems.Where(li => li.LineItemId != 0).Select(li => li.LineItemId).ToHashSet();
-        var incomingLineItemIds = writeSaleDto.LineItems.Where(li => li.LineItemId.HasValue && li.LineItemId.Value != 0).Select(li => li.LineItemId.Value).ToList();
+        var incomingLineItemIds = updateSaleDto.LineItems.Where(li => li.LineItemId.HasValue && li.LineItemId.Value != 0).Select(li => li.LineItemId.Value).ToList();
         var invalidLineItemIds = incomingLineItemIds.Where(id => !validLineItemIds.Contains(id)).ToList();
 
         if (invalidLineItemIds.Any())
@@ -162,20 +162,20 @@ public class SaleService : ISaleService
             return response;
         }
 
-        var productIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
+        var productIds = updateSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
 
         var allProducts = await _productRepository.GetAllProducts();
         var productPriceLookup = allProducts.Data.ToDictionary(p => p.ProductId, p => p.Price);
         var productLookup = allProducts.Data.ToDictionary(p => p.ProductId);
         var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
 
-        var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).ToList();
+        var incomingProductIds = updateSaleDto.LineItems.Select(li => li.ProductId).ToList();
         var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
 
         var existingProductIds = existingSale.LineItems.Select(li => li.ProductId).ToHashSet();
-        var incomingNewProductIds = writeSaleDto.LineItems.Where(li => !li.LineItemId.HasValue).Select(li => li.ProductId).ToList();
+        var incomingNewProductIds = updateSaleDto.LineItems.Where(li => !li.LineItemId.HasValue).Select(li => li.ProductId).ToList();
         var duplicateProductIds = incomingNewProductIds.Where(pid => existingProductIds.Contains(pid)).ToList();
-        var newLineItems = writeSaleDto.LineItems.Where(li => !existingSale.LineItems.Any(e => e.LineItemId == li.LineItemId)).ToList();
+        var newLineItems = updateSaleDto.LineItems.Where(li => !existingSale.LineItems.Any(e => e.LineItemId == li.LineItemId)).ToList();
         var conflictingProductIds = newLineItems.Select(li => li.ProductId).Where(pid => existingProductIds.Contains(pid)).Distinct().ToList();
         var duplicateProductIdsInNewItems = newLineItems.GroupBy(li => li.ProductId).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
         var allConflictingProductIds = duplicateProductIdsInNewItems.Concat(conflictingProductIds).Distinct().ToList();
@@ -201,7 +201,7 @@ public class SaleService : ISaleService
             return response;
         }
 
-        foreach (var incomingLineItem in writeSaleDto.LineItems)
+        foreach (var incomingLineItem in updateSaleDto.LineItems)
         {
             if (incomingLineItem.LineItemId.HasValue && existingLineItems.TryGetValue(incomingLineItem.LineItemId.Value, out var existingLineItem))
             {
@@ -220,7 +220,7 @@ public class SaleService : ISaleService
             }
         }
 
-        existingSale.DateAndTimeOfSale = writeSaleDto.DateAndTimeOfSale;
+        existingSale.DateAndTimeOfSale = updateSaleDto.DateAndTimeOfSale;
         existingSale.TotalPrice = existingSale.LineItems.Sum(li => li.Quantity * li.UnitPrice);
 
         response = await _saleRepository.UpdateSale(existingSale);

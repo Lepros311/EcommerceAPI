@@ -72,30 +72,30 @@ public class LineItemRepository : ILineItemRepository
 
     public async Task<BaseResponse<LineItem>> CreateLineItem(LineItem lineItem)
     {
-            var response = new BaseResponse<LineItem>();
+        var response = new BaseResponse<LineItem>();
 
-        //    try
-        //    {
-        //        _dbContext.Products.Add(product);
+        try
+        {
+            _dbContext.LineItems.Add(lineItem);
 
-        //        await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-        //        if (product == null)
-        //        {
-        //            response.Status = ResponseStatus.Fail;
-        //            response.Message = "Product not created.";
-        //        }
-        //        else
-        //        {
-        //            response.Status = ResponseStatus.Success;
-        //            response.Data = product;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Message = $"Error in ProductRepository {nameof(CreateProduct)}: {ex.Message}";
-        //        response.Status = ResponseStatus.Fail;
-        //    }
+            if (lineItem == null)
+            {
+                response.Status = ResponseStatus.Fail;
+                response.Message = "Line Item not created.";
+            }
+            else
+            {
+                response.Status = ResponseStatus.Success;
+                response.Data = lineItem;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Message = $"Error in LineItemRepository {nameof(CreateLineItem)}: {ex.Message}";
+            response.Status = ResponseStatus.Fail;
+        }
 
         return response;
     }
