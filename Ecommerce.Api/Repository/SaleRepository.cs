@@ -23,14 +23,21 @@ public class SaleRepository : ISaleRepository
 
         try
         {
-            var sales = await _dbContext.Sales
+            var query = _dbContext.Sales
                 .Include(s => s.LineItems)
                 .ThenInclude(li => li.Product)
                 .ThenInclude(p => p.Category)
-                .ToListAsync();
+                .AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var pagedSales = await query
+                                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                    .Take(paginationParams.PageSize)
+                                    .ToListAsync();
 
             response.Status = ResponseStatus.Success;
-            response.Data = sales;
+            response.Data = pagedSales;
         }
         catch (Exception ex)
         {

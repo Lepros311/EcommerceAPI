@@ -22,14 +22,21 @@ public class LineItemRepository : ILineItemRepository
                                                                totalRecords: 0);
         try
         {
-            var lineItems = await _dbContext.LineItems
+            var query = _dbContext.LineItems
                 .Include(li => li.Sale)
                 .Include(li => li.Product)
                 .ThenInclude(li => li.Category)
-                .ToListAsync();
+                .AsQueryable();
 
+            var totalCount = await query.CountAsync();
+
+            var pagedLineItems = await query
+                                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                    .Take(paginationParams.PageSize)
+                                    .ToListAsync();
+            
             response.Status = ResponseStatus.Success;
-            response.Data = lineItems;
+            response.Data = pagedLineItems;
         }
         catch (Exception ex)
         {

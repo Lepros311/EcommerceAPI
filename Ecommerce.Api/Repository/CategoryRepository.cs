@@ -22,10 +22,17 @@ public class CategoryRepository : ICategoryRepository
                                                                totalRecords: 0);
         try
         {
-            var categories = await _dbContext.Categories.Include(c => c.Products).ToListAsync();
+            var query = _dbContext.Categories.Include(c => c.Products).AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var pagedCategories = await query
+                                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                    .Take(paginationParams.PageSize)
+                                    .ToListAsync();
 
             response.Status = ResponseStatus.Success;
-            response.Data = categories;
+            response.Data = pagedCategories;
         }
         catch (Exception ex)
         {

@@ -26,12 +26,12 @@ public class ProductRepository : IProductRepository
             var query = _dbContext.Products.Include(p => p.Category);
             var totalCount = await query.CountAsync();
             var AllProducts = await query.ToListAsync();
-            var products = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+            var pagedProducts = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
                 .ToListAsync();
 
             response.Status = ResponseStatus.Success;
-            response.Data = products;
+            response.Data = pagedProducts;
         }
         catch (Exception ex)
         {
