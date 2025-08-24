@@ -59,22 +59,31 @@ public class SaleService : ISaleService
         var response = new BaseResponse<Sale>();
         var responseWithDataDto = new BaseResponse<SaleDto>();
 
-        if (writeSaleDto.LineItems.Select(li => li.Quantity < 0).Any())
+        if (writeSaleDto.LineItems.Any(li => li.Quantity < 0))
         {
             responseWithDataDto.Status = ResponseStatus.Fail;
             responseWithDataDto.Message = "Quantity must be greater than 0.";
             return responseWithDataDto;
         }
 
-        var productIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
+        var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
+        var duplicateProductIds = writeSaleDto.LineItems
+            .GroupBy(li => li.ProductId)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
 
-        var allProducts = await _productRepository.GetAllProducts();
-        var productPriceLookup = allProducts.Data.ToDictionary(p => p.ProductId, p => p.Price);
-        var productLookup = allProducts.Data.ToDictionary(p => p.ProductId);
-        var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
+        if (duplicateProductIds.Any())
+        {
+            responseWithDataDto.Status = ResponseStatus.Fail;
+            responseWithDataDto.Message = $"Duplicate Product ID(s) in sale: {string.Join(", ", duplicateProductIds)}";
+            return responseWithDataDto;
+        }
 
-        var incomingProductIds = writeSaleDto.LineItems.Select(li => li.ProductId).ToList();
-        var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
+        var validProductIds = await _productRepository.GetAllProductIds();
+        var missingProductIds = incomingProductIds
+            .Where(id => !validProductIds.Contains(id))
+            .ToList();
 
         if (missingProductIds.Any())
         {
@@ -83,11 +92,14 @@ public class SaleService : ISaleService
             return responseWithDataDto;
         }
 
+        var products = await _productRepository.GetProductsByIds(incomingProductIds);
+        var productLookup = products.ToDictionary(p => p.ProductId);
+
         var lineItems = writeSaleDto.LineItems.Select(li => new LineItem
         {
             ProductId = li.ProductId,
             Quantity = li.Quantity,
-            UnitPrice = productPriceLookup[li.ProductId],
+            UnitPrice = productLookup[li.ProductId].Price,
             Product = productLookup[li.ProductId]
         }).ToList();
 
@@ -141,7 +153,7 @@ public class SaleService : ISaleService
             return response;
         }
 
-        if (updateSaleDto.LineItems.Select(li => li.Quantity < 0).Any())
+        if (updateSaleDto.LineItems.Any(li => li.Quantity < 0))
         {
             response.Status = ResponseStatus.Fail;
             response.Message = "Quantity must be greater than 0.";
@@ -149,7 +161,6 @@ public class SaleService : ISaleService
         }
 
         var existingSale = response.Data;
-
         var existingLineItems = existingSale.LineItems.Where(li => li.LineItemId != null).ToDictionary(li => li.LineItemId);
         var validLineItemIds = existingSale.LineItems.Where(li => li.LineItemId != 0).Select(li => li.LineItemId).ToHashSet();
         var incomingLineItemIds = updateSaleDto.LineItems.Where(li => li.LineItemId.HasValue && li.LineItemId.Value != 0).Select(li => li.LineItemId.Value).ToList();
@@ -162,19 +173,7 @@ public class SaleService : ISaleService
             return response;
         }
 
-        var productIds = updateSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
-
-        var allProducts = await _productRepository.GetAllProducts();
-        var productPriceLookup = allProducts.Data.ToDictionary(p => p.ProductId, p => p.Price);
-        var productLookup = allProducts.Data.ToDictionary(p => p.ProductId);
-        var validProductIds = allProducts.Data.Select(p => p.ProductId).ToHashSet();
-
-        var incomingProductIds = updateSaleDto.LineItems.Select(li => li.ProductId).ToList();
-        var missingProductIds = incomingProductIds.Where(id => !validProductIds.Contains(id)).ToList();
-
         var existingProductIds = existingSale.LineItems.Select(li => li.ProductId).ToHashSet();
-        var incomingNewProductIds = updateSaleDto.LineItems.Where(li => !li.LineItemId.HasValue).Select(li => li.ProductId).ToList();
-        var duplicateProductIds = incomingNewProductIds.Where(pid => existingProductIds.Contains(pid)).ToList();
         var newLineItems = updateSaleDto.LineItems.Where(li => !existingSale.LineItems.Any(e => e.LineItemId == li.LineItemId)).ToList();
         var conflictingProductIds = newLineItems.Select(li => li.ProductId).Where(pid => existingProductIds.Contains(pid)).Distinct().ToList();
         var duplicateProductIdsInNewItems = newLineItems.GroupBy(li => li.ProductId).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
@@ -187,12 +186,11 @@ public class SaleService : ISaleService
             return response;
         }
 
-        if (duplicateProductIds.Any())
-        {
-            response.Status = ResponseStatus.Fail;
-            response.Message = "Cannot create duplicate line items for the same product.";
-            return response;
-        }
+        var productIds = updateSaleDto.LineItems.Select(li => li.ProductId).Distinct().ToList();
+        var products = await _productRepository.GetProductsByIds(productIds);
+        var productLookup = products.ToDictionary(p => p.ProductId);
+        var validProductIds = productLookup.Keys.ToHashSet();
+        var missingProductIds = productIds.Where(id => !validProductIds.Contains(id)).ToList();
 
         if (missingProductIds.Any())
         {
@@ -214,7 +212,7 @@ public class SaleService : ISaleService
                 {
                     ProductId = incomingLineItem.ProductId,
                     Quantity = incomingLineItem.Quantity,
-                    UnitPrice = productPriceLookup[incomingLineItem.ProductId],
+                    UnitPrice = productLookup[incomingLineItem.ProductId].Price,
                     Product = productLookup[incomingLineItem.ProductId]
                 });
             }

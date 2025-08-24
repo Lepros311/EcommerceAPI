@@ -14,7 +14,7 @@ public class ProductRepository : IProductRepository
         _dbContext = dbContext;
     }
 
-    public async Task<PagedResponse<List<Product>>> GetAllProducts(PaginationParams paginationParams)
+    public async Task<PagedResponse<List<Product>>> GetPagedProducts(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Product>>(data: new List<Product>(),
                                                        pageNumber: paginationParams.PageNumber,
@@ -35,12 +35,33 @@ public class ProductRepository : IProductRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in ProductRepository {nameof(GetAllProducts)}: {ex.Message}";
+            response.Message = $"Error in ProductRepository {nameof(GetPagedProducts)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
         
         return response;
     }
+
+    public async Task<List<int>> GetAllProductIds()
+    {
+        var productIds = await _dbContext.Products
+            .AsNoTracking()
+            .Select(p => p.ProductId)
+            .ToListAsync();
+
+        return productIds;
+    }
+
+    public async Task<List<Product>> GetProductsByIds(IEnumerable<int> productIds)
+    {
+        return await _dbContext.Products
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(p => p.Category)
+            .Where(p => productIds.Contains(p.ProductId))
+            .ToListAsync();
+    }
+
 
     public async Task<BaseResponse<Product>> GetProductById(int id)
     {

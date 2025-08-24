@@ -16,7 +16,7 @@ public class ProductService : IProductService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<PagedResponse<List<ProductDto>>> GetAllProducts(PaginationParams paginationParams)
+    public async Task<PagedResponse<List<ProductDto>>> GetPagedProducts(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Product>>(data: new List<Product>(),
                                                pageNumber: paginationParams.PageNumber,
@@ -27,7 +27,7 @@ public class ProductService : IProductService
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
 
-        response  = await _productRepository.GetAllProducts(paginationParams);
+        response  = await _productRepository.GetPagedProducts(paginationParams);
 
         if (response.Status == ResponseStatus.Fail)
         {

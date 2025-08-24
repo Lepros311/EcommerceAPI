@@ -2,7 +2,6 @@ using Ecommerce.Api.Models;
 using Ecommerce.Api.Responses;
 using Ecommerce.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Ecommerce.Api.Controllers
 {
@@ -18,9 +17,9 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDto>>> GetAllProducts([FromQuery] PaginationParams paginationParams)
+        public async Task<ActionResult<List<ProductDto>>> GetPagedProducts([FromQuery] PaginationParams paginationParams)
         {
-            var responseWithDtos = await _productService.GetAllProducts(paginationParams);
+            var responseWithDtos = await _productService.GetPagedProducts(paginationParams);
 
             if (responseWithDtos.Status == ResponseStatus.Fail)
             {

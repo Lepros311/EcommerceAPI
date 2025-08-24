@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Repository;
 
 public interface IProductRepository
 {
-    public Task<PagedResponse<List<Product>>> GetAllProducts(PaginationParams paginationParams);
+    public Task<PagedResponse<List<Product>>> GetPagedProducts(PaginationParams paginationParams);
 
     public Task<BaseResponse<Product>> GetProductById(int id);
 
@@ -14,4 +14,8 @@ public interface IProductRepository
     public Task<BaseResponse<Product>> UpdateProduct(Product updatedProduct);
 
     public Task<BaseResponse<Product>> DeleteProduct(int id);
+
+    public Task<List<int>> GetAllProductIds();
+
+    public Task<List<Product>> GetProductsByIds(IEnumerable<int> productIds);
 }
