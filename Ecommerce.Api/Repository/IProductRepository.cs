@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Repository;
 
 public interface IProductRepository
 {
-    public Task<BaseResponse<List<Product>>> GetAllProducts();
+    public Task<PagedResponse<List<Product>>> GetAllProducts(PaginationParams paginationParams);
 
     public Task<BaseResponse<Product>> GetProductById(int id);
 

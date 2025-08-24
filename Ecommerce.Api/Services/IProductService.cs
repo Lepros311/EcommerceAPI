@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Services;
 
 public interface IProductService
 {
-    Task<BaseResponse<List<ProductDto>>> GetAllProducts();
+    Task<PagedResponse<List<ProductDto>>> GetAllProducts(PaginationParams paginationParams);
 
     Task<BaseResponse<Product>> GetProductById(int id);
 

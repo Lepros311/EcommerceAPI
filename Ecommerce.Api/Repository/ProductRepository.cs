@@ -14,13 +14,21 @@ public class ProductRepository : IProductRepository
         _dbContext = dbContext;
     }
 
-    public async Task<BaseResponse<List<Product>>> GetAllProducts()
+    public async Task<PagedResponse<List<Product>>> GetAllProducts(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<Product>>();
-
+        var response = new PagedResponse<List<Product>>(data: new List<Product>(),
+                                                       pageNumber: paginationParams.PageNumber,
+                                                       pageSize: paginationParams.PageSize,
+                                                       totalRecords: 0);
+      
         try
         {
-            var products = await _dbContext.Products.Include(p => p.Category).ToListAsync();
+            var query = _dbContext.Products.Include(p => p.Category);
+            var totalCount = await query.CountAsync();
+            var AllProducts = await query.ToListAsync();
+            var products = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
+                .ToListAsync();
 
             response.Status = ResponseStatus.Success;
             response.Data = products;

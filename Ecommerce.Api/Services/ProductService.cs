@@ -16,12 +16,18 @@ public class ProductService : IProductService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<BaseResponse<List<ProductDto>>> GetAllProducts()
+    public async Task<PagedResponse<List<ProductDto>>> GetAllProducts(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<Product>>();
-        var responseWithDataDto = new BaseResponse<List<ProductDto>>();
+        var response = new PagedResponse<List<Product>>(data: new List<Product>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
+        var responseWithDataDto = new PagedResponse<List<ProductDto>>(data: new List<ProductDto>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
 
-        response  = await _productRepository.GetAllProducts();
+        response  = await _productRepository.GetAllProducts(paginationParams);
 
         if (response.Status == ResponseStatus.Fail)
         {

@@ -8,9 +8,3 @@ public class BaseResponse<T>
 
     public T? Data { get; set; }
 }
-
-public enum ResponseStatus
-{
-    Success,
-    Fail
-}
