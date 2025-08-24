@@ -111,7 +111,7 @@ public class SaleService : ISaleService
 
         var newSale = new Sale
         {
-            DateAndTimeOfSale = writeSaleDto.DateAndTimeOfSale,
+            DateAndTimeOfSale = DateTime.UtcNow,
             TotalPrice = lineItems.Sum(li => li.Quantity * li.UnitPrice),
             LineItems = lineItems
         };
@@ -224,7 +224,7 @@ public class SaleService : ISaleService
             }
         }
 
-        existingSale.DateAndTimeOfSale = updateSaleDto.DateAndTimeOfSale;
+        existingSale.DateAndTimeOfSale = DateTime.UtcNow;
         existingSale.TotalPrice = existingSale.LineItems.Sum(li => li.Quantity * li.UnitPrice);
 
         response = await _saleRepository.UpdateSale(existingSale);
