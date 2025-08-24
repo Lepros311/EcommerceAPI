@@ -7,18 +7,28 @@
 	},
 	"item": [
 		{
-			"name": "GetAllCategories",
+			"name": "GetPagedCategories",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseURL}}/api/categories",
+					"raw": "{{baseURL}}/api/categories?page=1&pageSize=10",
 					"host": [
 						"{{baseURL}}"
 					],
 					"path": [
 						"api",
 						"categories"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
@@ -120,18 +130,39 @@
 			"response": []
 		},
 		{
-			"name": "GetAllProducts",
+			"name": "GetPagedProducts",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "page",
+						"value": "1",
+						"type": "text"
+					},
+					{
+						"key": "pageSize",
+						"value": "10",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "{{baseURL}}/api/products",
+					"raw": "{{baseURL}}/api/products?page=1&pageSize=10",
 					"host": [
 						"{{baseURL}}"
 					],
 					"path": [
 						"api",
 						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
@@ -238,18 +269,28 @@
 			"response": []
 		},
 		{
-			"name": "GetAllSales",
+			"name": "GetPagedSales",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseURL}}/api/sales",
+					"raw": "{{baseURL}}/api/sales?page=1&pageSize=10",
 					"host": [
 						"{{baseURL}}"
 					],
 					"path": [
 						"api",
 						"sales"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
@@ -361,18 +402,28 @@
 			"response": []
 		},
 		{
-			"name": "GetAllLineItems",
+			"name": "GetPagedLineItems",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseURL}}/api/lineitems",
+					"raw": "{{baseURL}}/api/lineitems?page=1&pageSize=10",
 					"host": [
 						"{{baseURL}}"
 					],
 					"path": [
 						"api",
 						"lineitems"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
