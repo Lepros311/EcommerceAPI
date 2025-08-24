@@ -17,7 +17,7 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CategoryDto>>> GetPagedCategories(PaginationParams paginationParams)
+        public async Task<ActionResult<List<CategoryDto>>> GetPagedCategories([FromQuery] PaginationParams paginationParams)
         {
             var responseWithDtos = await _categoryService.GetPagedCategories(paginationParams);
 

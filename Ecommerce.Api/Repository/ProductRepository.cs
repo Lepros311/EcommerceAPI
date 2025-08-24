@@ -24,8 +24,9 @@ public class ProductRepository : IProductRepository
         try
         {
             var query = _dbContext.Products.Include(p => p.Category);
+
             var totalCount = await query.CountAsync();
-            var AllProducts = await query.ToListAsync();
+
             var pagedProducts = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
                 .ToListAsync();
