@@ -16,12 +16,18 @@ public class CategoryService : ICategoryService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<BaseResponse<List<CategoryDto>>> GetAllCategories()
+    public async Task<PagedResponse<List<CategoryDto>>> GetPagedCategories(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<Category>>();
-        var responseWithDataDto = new BaseResponse<List<CategoryDto>>();
+        var response = new PagedResponse<List<Category>>(data: new List<Category>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
+        var responseWithDataDto = new PagedResponse<List<CategoryDto>>(data: new List<CategoryDto>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
 
-        response = await _categoryRepository.GetAllCategories();
+        response = await _categoryRepository.GetPagedCategories(paginationParams);
 
         if (response.Status == ResponseStatus.Fail)
         {

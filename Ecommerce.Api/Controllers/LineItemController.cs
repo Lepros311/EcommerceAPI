@@ -17,9 +17,9 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<LineItemDto>>> GetAllLineItems()
+        public async Task<ActionResult<List<LineItemDto>>> GetPagedLineItems([FromQuery] PaginationParams paginationParams)
         {
-            var responseWithDtos = await _lineItemService.GetAllLineItems();
+            var responseWithDtos = await _lineItemService.GetPagedLineItems(paginationParams);
 
             if (responseWithDtos.Status == ResponseStatus.Fail)
             {

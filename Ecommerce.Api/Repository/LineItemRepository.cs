@@ -14,10 +14,12 @@ public class LineItemRepository : ILineItemRepository
         _dbContext = dbContext;
     }
 
-    public async Task<BaseResponse<List<LineItem>>> GetAllLineItems()
+    public async Task<PagedResponse<List<LineItem>>> GetPagedLineItems(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<LineItem>>();
-
+        var response = new PagedResponse<List<LineItem>>(data: new List<LineItem>(),
+                                                               pageNumber: paginationParams.PageNumber,
+                                                               pageSize: paginationParams.PageSize,
+                                                               totalRecords: 0);
         try
         {
             var lineItems = await _dbContext.LineItems
@@ -31,7 +33,7 @@ public class LineItemRepository : ILineItemRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in LineItemRepository {nameof(GetAllLineItems)}: {ex.Message}";
+            response.Message = $"Error in LineItemRepository {nameof(GetPagedLineItems)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
 

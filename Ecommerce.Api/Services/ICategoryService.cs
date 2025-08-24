@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Services;
 
 public interface ICategoryService
 {
-    Task<BaseResponse<List<CategoryDto>>> GetAllCategories();
+    Task<PagedResponse<List<CategoryDto>>> GetPagedCategories(PaginationParams paginationParams);
 
     Task<BaseResponse<Category>> GetCategoryById(int id);
 

@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Services;
 
 public interface ILineItemService
 {
-    Task<BaseResponse<List<LineItemDto>>> GetAllLineItems();
+    Task<PagedResponse<List<LineItemDto>>> GetPagedLineItems(PaginationParams paginationParams);
 
     Task<BaseResponse<LineItem>> GetLineItemById(int id);
 

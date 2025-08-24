@@ -14,9 +14,12 @@ public class SaleRepository : ISaleRepository
         _dbContext = dbContext;
     }
 
-    public async Task<BaseResponse<List<Sale>>> GetAllSales()
+    public async Task<PagedResponse<List<Sale>>> GetPagedSales(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<Sale>>();
+        var response = new PagedResponse<List<Sale>>(data: new List<Sale>(),
+                                                       pageNumber: paginationParams.PageNumber,
+                                                       pageSize: paginationParams.PageSize,
+                                                       totalRecords: 0);
 
         try
         {
@@ -31,7 +34,7 @@ public class SaleRepository : ISaleRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in SaleRepository {nameof(GetAllSales)}: {ex.Message}";
+            response.Message = $"Error in SaleRepository {nameof(GetPagedSales)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
 

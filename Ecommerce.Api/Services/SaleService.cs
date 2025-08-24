@@ -16,12 +16,18 @@ public class SaleService : ISaleService
         _saleRepository = saleRepository;
     }
 
-    public async Task<BaseResponse<List<SaleDto>>> GetAllSales()
+    public async Task<PagedResponse<List<SaleDto>>> GetPagedSales(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<Sale>>();
-        var responseWithDataDto = new BaseResponse<List<SaleDto>>();
+        var response = new PagedResponse<List<Sale>>(data: new List<Sale>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
+        var responseWithDataDto = new PagedResponse<List<SaleDto>>(data: new List<SaleDto>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
 
-        response = await _saleRepository.GetAllSales();
+        response = await _saleRepository.GetPagedSales(paginationParams);
 
         if (response.Status == ResponseStatus.Fail)
         {

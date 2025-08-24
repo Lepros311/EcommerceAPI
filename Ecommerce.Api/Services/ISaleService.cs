@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Services;
 
 public interface ISaleService
 {
-    Task<BaseResponse<List<SaleDto>>> GetAllSales();
+    Task<PagedResponse<List<SaleDto>>> GetPagedSales(PaginationParams paginationParams);
 
     Task<BaseResponse<Sale>> GetSaleById(int id);
 

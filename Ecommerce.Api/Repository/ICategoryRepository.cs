@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Repository;
 
 public interface ICategoryRepository
 {
-    public Task<BaseResponse<List<Category>>> GetAllCategories();
+    public Task<PagedResponse<List<Category>>> GetPagedCategories(PaginationParams paginationParams);
 
     public Task<BaseResponse<Category>> GetCategoryById(int id);
 

@@ -19,12 +19,18 @@ public class LineItemService : ILineItemService
         _productRepository = productRepository;
     }
 
-    public async Task<BaseResponse<List<LineItemDto>>> GetAllLineItems()
+    public async Task<PagedResponse<List<LineItemDto>>> GetPagedLineItems(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<LineItem>>();
-        var responseWithDataDto = new BaseResponse<List<LineItemDto>>();
+        var response = new PagedResponse<List<LineItem>>(data: new List<LineItem>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
+        var responseWithDataDto = new PagedResponse<List<LineItemDto>>(data: new List<LineItemDto>(),
+                                               pageNumber: paginationParams.PageNumber,
+                                               pageSize: paginationParams.PageSize,
+                                               totalRecords: 0);
 
-        response = await _lineItemRepository.GetAllLineItems();
+        response = await _lineItemRepository.GetPagedLineItems(paginationParams);
 
         if (response.Status == ResponseStatus.Fail)
         {

@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Repository;
 
 public interface ILineItemRepository
 {
-    public Task<BaseResponse<List<LineItem>>> GetAllLineItems();
+    public Task<PagedResponse<List<LineItem>>> GetPagedLineItems(PaginationParams paginationParams);
 
     public Task<BaseResponse<LineItem>> GetLineItemById(int id);
 

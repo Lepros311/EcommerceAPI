@@ -14,10 +14,12 @@ public class CategoryRepository : ICategoryRepository
         _dbContext = dbContext;
     }
 
-    public async Task<BaseResponse<List<Category>>> GetAllCategories()
+    public async Task<PagedResponse<List<Category>>> GetPagedCategories(PaginationParams paginationParams)
     {
-        var response = new BaseResponse<List<Category>>();
-
+        var response = new PagedResponse<List<Category>>(data: new List<Category>(),
+                                                               pageNumber: paginationParams.PageNumber,
+                                                               pageSize: paginationParams.PageSize,
+                                                               totalRecords: 0);
         try
         {
             var categories = await _dbContext.Categories.Include(c => c.Products).ToListAsync();
@@ -27,7 +29,7 @@ public class CategoryRepository : ICategoryRepository
         }
         catch (Exception ex)
         {
-            response.Message = $"Error in CategoryRepository {nameof(GetAllCategories)}: {ex.Message}";
+            response.Message = $"Error in CategoryRepository {nameof(GetPagedCategories)}: {ex.Message}";
             response.Status = ResponseStatus.Fail;
         }
 

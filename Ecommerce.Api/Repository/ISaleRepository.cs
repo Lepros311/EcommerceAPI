@@ -5,7 +5,7 @@ namespace Ecommerce.Api.Repository;
 
 public interface ISaleRepository
 {
-    public Task<BaseResponse<List<Sale>>> GetAllSales();
+    public Task<PagedResponse<List<Sale>>> GetPagedSales(PaginationParams paginationParams);
 
     public Task<BaseResponse<Sale>> GetSaleById(int id);
 
