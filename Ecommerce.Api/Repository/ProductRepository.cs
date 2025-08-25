@@ -23,9 +23,26 @@ public class ProductRepository : IProductRepository
       
         try
         {
-            var query = _dbContext.Products.Include(p => p.Category);
+            var query = _dbContext.Products.Include(p => p.Category).AsQueryable();
+
+            if (!string.IsNullOrEmpty(paginationParams.ProductName))
+                query = query.Where(p => p.ProductName.Contains(paginationParams.ProductName));
+            if (!string.IsNullOrEmpty(paginationParams.CategoryName))
+                query = query.Where(p => p.Category.CategoryName.Contains(paginationParams.CategoryName));
+            if (paginationParams.MinPrice.HasValue)
+                query = query.Where(p => p.Price >= paginationParams.MinPrice.Value);
+            if (paginationParams.MaxPrice.HasValue)
+                query = query.Where(p => p.Price <= paginationParams.MaxPrice.Value);            
 
             var totalCount = await query.CountAsync();
+
+            query = paginationParams.SortBy?.ToLower() switch
+            {
+                "productname" => paginationParams.SortDescending ? query.OrderByDescending(p => p.ProductName) : query.OrderBy(p => p.ProductName),
+                "category" => paginationParams.SortDescending ? query.OrderByDescending(p => p.Category.CategoryName) : query.OrderBy(p => p.Category.CategoryName),
+                "price" => paginationParams.SortDescending ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+                _ => paginationParams.SortDescending ? query.OrderByDescending(p => p.ProductId) : query.OrderBy(p => p.ProductId)
+            };
 
             var pagedProducts = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)

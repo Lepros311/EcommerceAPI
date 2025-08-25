@@ -12,4 +12,18 @@ public class PaginationParams
         get => _pageSize;
         set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
     }
+
+    public string? SortBy { get; set; }
+
+    public bool SortDescending { get; set; } = true;
+
+    public string? ProductName { get; set; }
+
+    public string? CategoryName { get; set; }
+
+    public decimal? MinPrice { get; set; }
+
+    public decimal? MaxPrice { get; set; }
+
+    public int? Quantity { get; set; }
 }
