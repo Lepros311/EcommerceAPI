@@ -36,12 +36,17 @@ public class ProductRepository : IProductRepository
 
             var totalCount = await query.CountAsync();
 
-            query = paginationParams.SortBy?.ToLower() switch
+            var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "productid";
+            var sortAscending = paginationParams.SortAscending;
+
+            bool useAscending = sortAscending ?? (sortBy == "productid" ? false : true);
+
+            query = sortBy switch
             {
-                "productname" => paginationParams.SortDescending ? query.OrderByDescending(p => p.ProductName) : query.OrderBy(p => p.ProductName),
-                "category" => paginationParams.SortDescending ? query.OrderByDescending(p => p.Category.CategoryName) : query.OrderBy(p => p.Category.CategoryName),
-                "price" => paginationParams.SortDescending ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
-                _ => paginationParams.SortDescending ? query.OrderByDescending(p => p.ProductId) : query.OrderBy(p => p.ProductId)
+                "productname" => useAscending ? query.OrderBy(p => p.ProductName) : query.OrderByDescending(p => p.ProductName),
+                "categoryname" => useAscending ? query.OrderBy(p => p.Category.CategoryName) : query.OrderByDescending(p => p.Category.CategoryName),
+                "price" => useAscending ? query.OrderBy(p => p.Price) : query.OrderByDescending(p => p.Price),
+                _ => useAscending ? query.OrderBy(p => p.ProductId) : query.OrderByDescending(p => p.ProductId)
             };
 
             var pagedProducts = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)

@@ -28,7 +28,40 @@ public class LineItemRepository : ILineItemRepository
                 .ThenInclude(li => li.Category)
                 .AsQueryable();
 
+            if (!string.IsNullOrEmpty(paginationParams.ProductName))
+                query = query.Where(li => li.Product.ProductName.Contains(paginationParams.ProductName));
+            if (!string.IsNullOrEmpty(paginationParams.CategoryName))
+                query = query.Where(li => li.Product.Category.CategoryName.Contains(paginationParams.CategoryName));
+            if (paginationParams.MinPrice.HasValue)
+                query = query.Where(li => li.UnitPrice >= paginationParams.MinPrice.Value);
+            if (paginationParams.MaxPrice.HasValue)
+                query = query.Where(li => li.UnitPrice <= paginationParams.MaxPrice.Value);
+            if (paginationParams.MinQuantity.HasValue)
+                query = query.Where(li => li.Quantity >= paginationParams.MinQuantity.Value);
+            if (paginationParams.MaxQuantity.HasValue)
+                query = query.Where(li => li.Quantity <= paginationParams.MaxQuantity.Value);
+            if (paginationParams.ProductId.HasValue)
+                query = query.Where(li => li.ProductId == paginationParams.ProductId.Value);
+            if (paginationParams.SaleId.HasValue)
+                query = query.Where(li => li.SaleId == paginationParams.SaleId.Value);
+
             var totalCount = await query.CountAsync();
+
+            var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "lineitemid";
+            var sortAscending = paginationParams.SortAscending;
+
+            bool useAscending = sortAscending ?? (sortBy == "lineitemid" ? false : true);
+
+            query = sortBy switch
+            {
+                "productname" => useAscending ? query.OrderBy(li => li.Product.ProductName) : query.OrderByDescending(li => li.Product.ProductName),
+                "categoryname" => useAscending ? query.OrderBy(li => li.Product.Category.CategoryName) : query.OrderByDescending(li => li.Product.Category.CategoryName),
+                "unitprice" => useAscending ? query.OrderBy(li => li.UnitPrice) : query.OrderByDescending(li => li.UnitPrice),
+                "quantity" => useAscending ? query.OrderBy(li => li.Quantity) : query.OrderByDescending(li => li.Quantity),
+                "productid" => useAscending ? query.OrderBy(li => li.ProductId) : query.OrderByDescending(li => li.ProductId),
+                "saleid" => useAscending ? query.OrderBy(li => li.SaleId) : query.OrderByDescending(li => li.SaleId),
+                _ => useAscending ? query.OrderBy(li => li.LineItemId) : query.OrderByDescending(li => li.LineItemId)
+            };
 
             var pagedLineItems = await query
                                     .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)

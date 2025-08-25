@@ -24,7 +24,21 @@ public class CategoryRepository : ICategoryRepository
         {
             var query = _dbContext.Categories.Include(c => c.Products).AsQueryable();
 
+            if (!string.IsNullOrEmpty(paginationParams.CategoryName))
+                query = query.Where(c => c.CategoryName.Contains(paginationParams.CategoryName));
+
             var totalCount = await query.CountAsync();
+
+            var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "categoryid";
+            var sortAscending = paginationParams.SortAscending;
+
+            bool useAscending = sortAscending ?? (sortBy == "categoryid" ? false : true);
+
+            query = sortBy switch
+            {
+                "categoryname" => useAscending ? query.OrderBy(c => c.CategoryName) : query.OrderByDescending(c => c.CategoryName),
+                _ => useAscending ? query.OrderBy(c => c.CategoryId) : query.OrderByDescending(c => c.CategoryId)
+            };
 
             var pagedCategories = await query
                                     .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)

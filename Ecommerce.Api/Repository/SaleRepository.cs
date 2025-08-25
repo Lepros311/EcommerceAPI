@@ -29,7 +29,30 @@ public class SaleRepository : ISaleRepository
                 .ThenInclude(p => p.Category)
                 .AsQueryable();
 
+            if (paginationParams.MinPrice.HasValue)
+                query = query.Where(s => s.TotalPrice >= paginationParams.MinPrice.Value);
+            if (paginationParams.MaxPrice.HasValue)
+                query = query.Where(s => s.TotalPrice <= paginationParams.MaxPrice.Value);
+            if (paginationParams.LineItemId.HasValue)
+                query = query.Where(s => s.TotalPrice == paginationParams.LineItemId.Value);
+            if (paginationParams.MinLineItems.HasValue)
+                query = query.Where(s => s.LineItems.Count >= paginationParams.MinLineItems.Value);
+            if (paginationParams.MaxLineItems.HasValue)
+                query = query.Where(s => s.LineItems.Count <= paginationParams.MaxLineItems.Value);
+
             var totalCount = await query.CountAsync();
+
+            var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "saleid";
+            var sortAscending = paginationParams.SortAscending;
+
+            bool useAscending = sortAscending ?? (sortBy == "saleid" ? false : true);
+
+            query = sortBy switch
+            {
+                "totalprice" => useAscending ? query.OrderBy(s => s.TotalPrice) : query.OrderByDescending(s => s.TotalPrice),
+                "lineitemcount" => useAscending ? query.OrderBy(s => s.LineItems.Count) : query.OrderByDescending(s => s.LineItems.Count),
+                _ => useAscending ? query.OrderBy(s => s.SaleId) : query.OrderByDescending(s => s.SaleId)
+            };
 
             var pagedSales = await query
                                     .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)

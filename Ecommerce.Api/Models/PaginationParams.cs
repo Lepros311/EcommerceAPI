@@ -15,7 +15,7 @@ public class PaginationParams
 
     public string? SortBy { get; set; }
 
-    public bool SortDescending { get; set; } = true;
+    public bool? SortAscending { get; set; }
 
     public string? ProductName { get; set; }
 
@@ -25,5 +25,17 @@ public class PaginationParams
 
     public decimal? MaxPrice { get; set; }
 
-    public int? Quantity { get; set; }
+    public int? MinQuantity { get; set; }
+
+    public int? MaxQuantity { get; set; }
+
+    public int? ProductId { get; set; }
+
+    public int? SaleId { get; set; }
+
+    public int? LineItemId { get; set; }
+
+    public int? MinLineItems { get; set; }
+
+    public int? MaxLineItems { get; set; }
 }
