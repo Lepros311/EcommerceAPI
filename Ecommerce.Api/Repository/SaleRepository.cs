@@ -17,7 +17,7 @@ public class SaleRepository : ISaleRepository
     public async Task<PagedResponse<List<Sale>>> GetPagedSales(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Sale>>(data: new List<Sale>(),
-                                                       pageNumber: paginationParams.PageNumber,
+                                                       pageNumber: paginationParams.Page,
                                                        pageSize: paginationParams.PageSize,
                                                        totalRecords: 0);
 
@@ -40,8 +40,6 @@ public class SaleRepository : ISaleRepository
             if (paginationParams.MaxLineItems.HasValue)
                 query = query.Where(s => s.LineItems.Count <= paginationParams.MaxLineItems.Value);
 
-            var totalCount = await query.CountAsync();
-
             var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "saleid";
             var sortAscending = paginationParams.SortAscending;
 
@@ -55,7 +53,7 @@ public class SaleRepository : ISaleRepository
             };
 
             var pagedSales = await query
-                                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                    .Skip((paginationParams.Page - 1) * paginationParams.PageSize)
                                     .Take(paginationParams.PageSize)
                                     .ToListAsync();
 

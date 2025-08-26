@@ -19,11 +19,11 @@ public class ProductService : IProductService
     public async Task<PagedResponse<List<ProductDto>>> GetPagedProducts(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Product>>(data: new List<Product>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
         var responseWithDataDto = new PagedResponse<List<ProductDto>>(data: new List<ProductDto>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
 

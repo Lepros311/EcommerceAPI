@@ -17,7 +17,7 @@ public class ProductRepository : IProductRepository
     public async Task<PagedResponse<List<Product>>> GetPagedProducts(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Product>>(data: new List<Product>(),
-                                                       pageNumber: paginationParams.PageNumber,
+                                                       pageNumber: paginationParams.Page,
                                                        pageSize: paginationParams.PageSize,
                                                        totalRecords: 0);
       
@@ -34,8 +34,6 @@ public class ProductRepository : IProductRepository
             if (paginationParams.MaxPrice.HasValue)
                 query = query.Where(p => p.Price <= paginationParams.MaxPrice.Value);            
 
-            var totalCount = await query.CountAsync();
-
             var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "productid";
             var sortAscending = paginationParams.SortAscending;
 
@@ -49,7 +47,7 @@ public class ProductRepository : IProductRepository
                 _ => useAscending ? query.OrderBy(p => p.ProductId) : query.OrderByDescending(p => p.ProductId)
             };
 
-            var pagedProducts = await query.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+            var pagedProducts = await query.Skip((paginationParams.Page - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
                 .ToListAsync();
 

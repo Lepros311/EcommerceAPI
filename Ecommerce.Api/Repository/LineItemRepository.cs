@@ -17,7 +17,7 @@ public class LineItemRepository : ILineItemRepository
     public async Task<PagedResponse<List<LineItem>>> GetPagedLineItems(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<LineItem>>(data: new List<LineItem>(),
-                                                               pageNumber: paginationParams.PageNumber,
+                                                               pageNumber: paginationParams.Page,
                                                                pageSize: paginationParams.PageSize,
                                                                totalRecords: 0);
         try
@@ -45,8 +45,6 @@ public class LineItemRepository : ILineItemRepository
             if (paginationParams.SaleId.HasValue)
                 query = query.Where(li => li.SaleId == paginationParams.SaleId.Value);
 
-            var totalCount = await query.CountAsync();
-
             var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "lineitemid";
             var sortAscending = paginationParams.SortAscending;
 
@@ -64,7 +62,7 @@ public class LineItemRepository : ILineItemRepository
             };
 
             var pagedLineItems = await query
-                                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                    .Skip((paginationParams.Page - 1) * paginationParams.PageSize)
                                     .Take(paginationParams.PageSize)
                                     .ToListAsync();
             

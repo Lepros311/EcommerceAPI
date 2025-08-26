@@ -17,7 +17,7 @@ public class CategoryRepository : ICategoryRepository
     public async Task<PagedResponse<List<Category>>> GetPagedCategories(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Category>>(data: new List<Category>(),
-                                                               pageNumber: paginationParams.PageNumber,
+                                                               pageNumber: paginationParams.Page,
                                                                pageSize: paginationParams.PageSize,
                                                                totalRecords: 0);
         try
@@ -26,8 +26,6 @@ public class CategoryRepository : ICategoryRepository
 
             if (!string.IsNullOrEmpty(paginationParams.CategoryName))
                 query = query.Where(c => c.CategoryName.Contains(paginationParams.CategoryName));
-
-            var totalCount = await query.CountAsync();
 
             var sortBy = paginationParams.SortBy?.Trim().ToLower() ?? "categoryid";
             var sortAscending = paginationParams.SortAscending;
@@ -41,7 +39,7 @@ public class CategoryRepository : ICategoryRepository
             };
 
             var pagedCategories = await query
-                                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                    .Skip((paginationParams.Page - 1) * paginationParams.PageSize)
                                     .Take(paginationParams.PageSize)
                                     .ToListAsync();
 

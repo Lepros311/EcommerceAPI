@@ -19,11 +19,11 @@ public class SaleService : ISaleService
     public async Task<PagedResponse<List<SaleDto>>> GetPagedSales(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Sale>>(data: new List<Sale>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
         var responseWithDataDto = new PagedResponse<List<SaleDto>>(data: new List<SaleDto>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
 

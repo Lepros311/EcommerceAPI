@@ -22,11 +22,11 @@ public class LineItemService : ILineItemService
     public async Task<PagedResponse<List<LineItemDto>>> GetPagedLineItems(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<LineItem>>(data: new List<LineItem>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
         var responseWithDataDto = new PagedResponse<List<LineItemDto>>(data: new List<LineItemDto>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
 

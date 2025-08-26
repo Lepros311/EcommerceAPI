@@ -19,11 +19,11 @@ public class CategoryService : ICategoryService
     public async Task<PagedResponse<List<CategoryDto>>> GetPagedCategories(PaginationParams paginationParams)
     {
         var response = new PagedResponse<List<Category>>(data: new List<Category>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
         var responseWithDataDto = new PagedResponse<List<CategoryDto>>(data: new List<CategoryDto>(),
-                                               pageNumber: paginationParams.PageNumber,
+                                               pageNumber: paginationParams.Page,
                                                pageSize: paginationParams.PageSize,
                                                totalRecords: 0);
 
